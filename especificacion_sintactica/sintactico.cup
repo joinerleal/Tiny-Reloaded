@@ -73,11 +73,11 @@ stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.pri
 							RESULT=ini;
 						}else{
 							RESULT=sent;
-						}
-						:}
+						} 
+						:} SEMI
             | stmt:sent	{: if(modoDepuracion) System.out.println("\t regla 2b"); 
 				RESULT=sent;				
-				:}
+				:} SEMI
 		;
 
 stmt        ::= if_stmt:sif	{: if(modoDepuracion) System.out.println("\t regla 3a"); 
