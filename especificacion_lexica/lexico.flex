@@ -82,11 +82,11 @@ espacio		= [ \t]+
 ">"             {	if(debug) System.out.println("token GT");
 			return sf.newSymbol("GT",sym.GT);
 			}
-"&&"             {	if(debug) System.out.println("token AND");
-			return sf.newSymbol("AND",sym.AND);
-			}
 "!="             {	if(debug) System.out.println("token DIFF");
 			return sf.newSymbol("DIFF",sym.DIFF);
+			}
+"&&"             {	if(debug) System.out.println("token AND");
+			return sf.newSymbol("AND",sym.AND);
 			}
 "||"             {	if(debug) System.out.println("token OR");
 			return sf.newSymbol("OR",sym.OR);
