@@ -71,11 +71,26 @@ espacio		= [ \t]+
 "="             {	if(debug) System.out.println("token EQ");
 			return sf.newSymbol("EQ",sym.EQ);
 			}
+"<="             {	if(debug) System.out.println("token LE");
+			return sf.newSymbol("LE",sym.LE);
+			}
+">="             {	if(debug) System.out.println("token GE");
+			return sf.newSymbol("GE",sym.GE);
+			}
 "<"             {	if(debug) System.out.println("token LT");
 			return sf.newSymbol("LT",sym.LT);
 			}
 ">"             {	if(debug) System.out.println("token GT");
 			return sf.newSymbol("GT",sym.GT);
+			}
+"&&"             {	if(debug) System.out.println("token AND");
+			return sf.newSymbol("AND",sym.AND);
+			}
+"!="             {	if(debug) System.out.println("token DIFF");
+			return sf.newSymbol("DIFF",sym.DIFF);
+			}
+"||"             {	if(debug) System.out.println("token OR");
+			return sf.newSymbol("OR",sym.OR);
 			}
 "+"             {	if(debug) System.out.println("token PLUS");
 			return sf.newSymbol("PLUS",sym.PLUS);
