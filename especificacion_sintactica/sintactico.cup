@@ -127,7 +127,7 @@ if_stmt     ::= IF exp_seq:ex THEN stmt_seq:pthen END	{: if(modoDepuracion) Syst
 		:}
 		;
 
-repeat_stmt ::= REPEAT stmt_seq:cuerpo UNTIL exp:prueba	{: if(modoDepuracion) System.out.println("\t regla 5"); 
+repeat_stmt ::= REPEAT stmt_seq:cuerpo UNTIL exp_seq:prueba	{: if(modoDepuracion) System.out.println("\t regla 5"); 
 				//	RESULT = new NodoRepeat(cuerpo,prueba);
 							:}
 		;
