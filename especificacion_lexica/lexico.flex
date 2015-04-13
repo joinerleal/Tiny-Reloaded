@@ -34,11 +34,13 @@ import java_cup.runtime.*;
 
 
 digito		= [0-9]
+VECTOR	= ["["] [1-9]+ ["]"]
 numero		= {digito}+ | [ \-] {digito}+
 letra			= [a-zA-Z]
 identificador	= {letra}+
 nuevalinea		= \n | \n\r | \r\n
 espacio		= [ \t]+
+
 %%
 
 "int"            {	if(debug) System.out.println("token int");
@@ -113,6 +115,16 @@ espacio		= [ \t]+
 "/"             {	if(debug) System.out.println("token OVER");
 			return sf.newSymbol("OVER",sym.OVER);
 			}
+
+
+"["             {	if(debug) System.out.println("token LCOR");
+			return sf.newSymbol("LCOR",sym.LCOR);
+			}
+"]"             {	if(debug) System.out.println("token RCOR");
+			return sf.newSymbol("RCOR",sym.RCOR);
+			}
+
+
 "("             {	if(debug) System.out.println("token LPAREN");
 			return sf.newSymbol("LPAREN",sym.LPAREN);
 			}
@@ -127,6 +139,10 @@ espacio		= [ \t]+
 			}
 {numero}        {	if(debug) System.out.println("token NUM");
 			return sf.newSymbol("NUM",sym.NUM,new Integer(yytext()));
+			}
+
+{VECTOR}        {	if(debug) System.out.println("token VEC");
+			return sf.newSymbol("VEC",sym.VEC,new String(yytext()));
 			}
 {identificador}	{	if(debug) System.out.println("token ID");
 				return sf.newSymbol("ID",sym.ID,new String(yytext()));

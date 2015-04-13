@@ -27,6 +27,7 @@ terminal UNTIL;
 terminal READ;
 terminal WRITE;
 terminal String ID;
+terminal String VEC;
 terminal Integer NUM;
 terminal ASSIGN;
 terminal EQ;
@@ -106,8 +107,11 @@ stmt        ::= if_stmt:sif	{: if(modoDepuracion) System.out.println("\t regla 3
             | write_stmt:sesc	{: if(modoDepuracion) System.out.println("\t regla 3e"); 
 					// RESULT=sesc;
 					:}
-			| declare_stmt_int:sdec	{: if(modoDepuracion) System.out.println("\t regla 3f"); 
+			| declare_stmt:sdec	{: if(modoDepuracion) System.out.println("\t regla 3f"); 
 					// RESULT=sdec;
+					:}
+			| declare_stmt_vec:sdecv	{: if(modoDepuracion) System.out.println("\t regla 3g"); 
+					// RESULT=sdecv;
 					:}
             | error	{: if(modoDepuracion) System.out.println("\t regla 3f"); 
 				System.out.println("Ocurrio error en cup # 0004");
@@ -156,6 +160,21 @@ read_stmt   ::= READ ID:variable	{: if(modoDepuracion) System.out.println("\t re
 write_stmt  ::= WRITE exp:ex	{: if(modoDepuracion) System.out.println("\t regla 8"); 
 					// RESULT= new NodoEscribir(ex);
 					:}
+		;
+
+
+declare_stmt_vec  ::=  INT ID:variable VEC:variablevec	{: if(modoDepuracion) System.out.println("\t regla 16"); 
+					/* System.out.println("Leyendo Variable");
+					if(variable!=null)
+					/* RESULT = new NodoLeer(variable.toString()); */
+					System.out.println("\t regla 13a exitosa")
+					else{
+					RESULT = null;
+					System.out.println("Ocurrio error en cup # 0002");
+					} */
+					:}
+
+
 		;
 
 declare_stmt  ::=  INT seq_variable	{: if(modoDepuracion) System.out.println("\t regla 13a"); 
