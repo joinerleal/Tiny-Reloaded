@@ -57,6 +57,7 @@ non terminal NodoBase stmt;
 non terminal NodoBase tipo;
 non terminal NodoBase if_stmt;
 non terminal NodoBase repeat_stmt;
+non terminal NodoBase for_stmt;
 non terminal NodoBase assign_stmt;
 non terminal NodoBase read_stmt;
 non terminal NodoBase write_stmt;
@@ -86,7 +87,7 @@ program     ::= stmt_seq:s	{: if(modoDepuracion) System.out.println("\t regla 1"
 				//	ast = s;
 					:}
 		;
-func_summon	::= assign_stmt:asignacion ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
+/*func_summon	::= assign_stmt:asignacion ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
 					if(modoDepuracion) System.out.println("\t regla 18"); 
 					:}
 		;
@@ -101,7 +102,7 @@ func_cast	::=	{: TIPO:type ID:func_nombre LPAREN seq_variable:parametros RPAREN 
 proc_cast	::= {: VOID ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo END
 					if(modoDepuracion) System.out.println("\t regla 22"); 
 					:}
-		;
+		;*/
 stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.println("\t regla 2a"); 
 						/* NodoBase hijoActual = ini;
 							if(hijoActual !=null){
