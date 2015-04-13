@@ -54,6 +54,7 @@ terminal SEMI;
 non terminal program;
 non terminal NodoBase stmt_seq;
 non terminal NodoBase stmt;
+non terminal NodoBase tipo;
 non terminal NodoBase if_stmt;
 non terminal NodoBase repeat_stmt;
 non terminal NodoBase assign_stmt;
@@ -61,6 +62,10 @@ non terminal NodoBase read_stmt;
 non terminal NodoBase write_stmt;
 non terminal NodoBase declare_stmt;
 non terminal NodoBase seq_variable;
+non terminal NodoBase func_summon;
+non terminal NodoBase proc_summon;
+non terminal NodoBase func_cast;
+non terminal NodoBase proc_cast;
 non terminal NodoBase exp;
 non terminal NodoBase simple_exp;
 non terminal NodoBase term;
@@ -77,7 +82,22 @@ program     ::= stmt_seq:s	{: if(modoDepuracion) System.out.println("\t regla 1"
 				//	ast = s;
 					:}
 		;
-
+func_summon	::= assign_stmt:asignacion ID:func_nombre LPARENT stmt_seq:parametros RPARENT {:
+					if(modoDepuracion) System.out.println("\t regla 18"); 
+					:}
+		;
+proc_summon	::=	ID:func_nombre LPARENT stmt_seq:parametros RPARENT {:
+					if(modoDepuracion) System.out.println("\t regla 19"); 
+					:}
+		;
+func_cast	::=	{: TIPO:type ID:func_nombre LPARENT seq_variable:parametros RPARENT BEGIN stmt_seq:cuerpo END
+					if(modoDepuracion) System.out.println("\t regla 21"); 
+					:}
+		;
+proc_cast	::= {: VOID ID:func_nombre LPARENT seq_variable:parametros RPARENT BEGIN stmt_seq:cuerpo END
+					if(modoDepuracion) System.out.println("\t regla 22"); 
+					:}
+		;
 stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.println("\t regla 2a"); 
 						/* NodoBase hijoActual = ini;
 							if(hijoActual !=null){
@@ -89,7 +109,7 @@ stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.pri
 							}else{
 								RESULT=sent;
 							} */
-						:} SEMI
+					:} SEMI
             | stmt:sent	{: if(modoDepuracion) System.out.println("\t regla 2b"); 
 				// RESULT=sent;				
 				:} SEMI
@@ -100,10 +120,10 @@ stmt        ::= if_stmt:sif	{: if(modoDepuracion) System.out.println("\t regla 3
 					:}
             | repeat_stmt:srep	{: if(modoDepuracion) System.out.println("\t regla 3b"); 
 						// RESULT=srep;
-						:}
+					:}
             | assign_stmt:sasi	{: if(modoDepuracion) System.out.println("\t regla 3c"); 
 						// RESULT=sasi;
-						:}
+					:}
             | read_stmt:slec	{: if(modoDepuracion) System.out.println("\t regla 3d"); 
 					// RESULT=slec;
 					:}
@@ -196,7 +216,7 @@ declare_stmt  ::=  INT seq_variable	{: if(modoDepuracion) System.out.println("\t
 					}
 					:}
 	|
-					BOOLEAN seq_variable	{: if(modoDepuracion) System.out.println("\t regla 13b"); 
+					BOOLEAN seq_variable:seqvar	{: if(modoDepuracion) System.out.println("\t regla 13b"); 
 					System.out.println("Leyendo Variable");
 					if(variable!=null)
 					/* RESULT = new NodoLeer(variable.toString()); */
@@ -212,7 +232,7 @@ declare_stmt  ::=  INT seq_variable	{: if(modoDepuracion) System.out.println("\t
 		;
 
 
-seq_variable	::= seq_variable COL ID:variable{:
+seq_variable	::= seq_variable:seqvar COL ID:variable{:
 					if(modoDepuracion) System.out.println("\t regla 14a");
 					:}
 		|
@@ -221,7 +241,7 @@ seq_variable	::= seq_variable COL ID:variable{:
 					:}
 		;
 
-exp_seq			::== exp:exI OR exp:exD	{:
+exp_seq			::= exp:exI OR exp:exD	{:
 					if(modoDepuracion) System.out.println("\t regla 15a");
 					:}
 		| exp:exI AND exp:exD	{:
@@ -229,6 +249,13 @@ exp_seq			::== exp:exI OR exp:exD	{:
 					:}
 		| exp {:
 					if(modoDepuracion) System.out.println("\t regla 15a");
+					:}
+		;
+tipo 			::= INT:entero {:
+					if(modoDepuracion) System.out.println("\t regla 20a");
+					:}
+		| 			BOOLEAN:booleano {:
+					if(modoDepuracion) System.out.println("\t regla 20a");
 					:}
 		;
 
