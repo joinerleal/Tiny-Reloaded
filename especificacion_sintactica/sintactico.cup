@@ -87,7 +87,8 @@ program     ::= stmt_seq:s	{: if(modoDepuracion) System.out.println("\t regla 1"
 				//	ast = s;
 					:}
 		;
-/*func_summon	::= assign_stmt:asignacion ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
+/*
+func_summon	::= assign_stmt:asignacion ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
 					if(modoDepuracion) System.out.println("\t regla 18"); 
 					:}
 		;
@@ -95,14 +96,15 @@ proc_summon	::=	ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
 					if(modoDepuracion) System.out.println("\t regla 19"); 
 					:}
 		;
-func_cast	::=	{: TIPO:type ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo END
+func_cast	::=	{: tipo:type ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo END
 					if(modoDepuracion) System.out.println("\t regla 21"); 
 					:}
 		;
 proc_cast	::= {: VOID ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo END
 					if(modoDepuracion) System.out.println("\t regla 22"); 
 					:}
-		;*/
+		;
+*/
 stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.println("\t regla 2a"); 
 						/* NodoBase hijoActual = ini;
 							if(hijoActual !=null){
