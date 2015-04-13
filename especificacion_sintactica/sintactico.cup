@@ -16,6 +16,8 @@ action code {:
 
 /* Simbolos Terminales */
 
+terminal INT;
+terminal BOOLEAN;
 terminal IF;
 terminal THEN;
 terminal ELSE;
@@ -41,6 +43,7 @@ terminal TIMES;
 terminal OVER;
 terminal LPAREN;
 terminal RPAREN;
+terminal COLOM;
 terminal SEMI;
 
 /* Simbolos No Terminales */
@@ -52,6 +55,8 @@ non terminal NodoBase repeat_stmt;
 non terminal NodoBase assign_stmt;
 non terminal NodoBase read_stmt;
 non terminal NodoBase write_stmt;
+non terminal NodoBase declare_stmt;
+non terminal NodoBase seq_variable;
 non terminal NodoBase exp;
 non terminal NodoBase simple_exp;
 non terminal NodoBase term;
@@ -101,7 +106,9 @@ stmt        ::= if_stmt:sif	{: if(modoDepuracion) System.out.println("\t regla 3
             | write_stmt:sesc	{: if(modoDepuracion) System.out.println("\t regla 3e"); 
 					RESULT=sesc;
 					:}
-			
+			| declare_stmt_int:sdec	{: if(modoDepuracion) System.out.println("\t regla 3f"); 
+					RESULT=sdec;
+					:}
             | error	{: if(modoDepuracion) System.out.println("\t regla 3f"); 
 				System.out.println("Ocurrio error en cup # 0004");
 				RESULT=null;
@@ -148,6 +155,40 @@ read_stmt   ::= READ ID:variable	{: if(modoDepuracion) System.out.println("\t re
 
 write_stmt  ::= WRITE exp:ex	{: if(modoDepuracion) System.out.println("\t regla 8"); 
 					RESULT= new NodoEscribir(ex);
+					:}
+		;
+
+declare_stmt  ::=  INT seq_variable	{: if(modoDepuracion) System.out.println("\t regla 13a"); 
+					System.out.println("Leyendo Variable");
+					if(variable!=null)
+					/* RESULT = new NodoLeer(variable.toString()); */
+					System.out.println("\t regla 13a exitosa")
+					else{
+					RESULT = null;
+					System.out.println("Ocurrio error en cup # 0002");
+					}
+					:}
+	|
+					BOOLEAN seq_variable	{: if(modoDepuracion) System.out.println("\t regla 13b"); 
+					System.out.println("Leyendo Variable");
+					if(variable!=null)
+					/* RESULT = new NodoLeer(variable.toString()); */
+					System.out.println("\t regla 14a exitosa")
+					else{
+					RESULT = null;
+					System.out.println("Ocurrio error en cup # 0002");
+					}
+					:}
+
+
+
+		;
+
+
+seq_variable	::= seq_variable COL ID:variable{:
+					:}
+		|
+					ID:variable{:
 					:}
 		;
 
