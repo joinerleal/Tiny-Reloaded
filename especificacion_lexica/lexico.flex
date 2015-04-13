@@ -40,6 +40,16 @@ identificador	= {letra}+
 nuevalinea		= \n | \n\r | \r\n
 espacio		= [ \t]+
 %%
+
+"int"            {	if(debug) System.out.println("token int");
+			return sf.newSymbol("Int",sym.int);
+			}
+
+"boolean"            {	if(debug) System.out.println("token boolean");
+			return sf.newSymbol("boolean",sym.boolean);
+			}
+
+
 "if"            {	if(debug) System.out.println("token IF");
 			return sf.newSymbol("IF",sym.IF);
 			}
