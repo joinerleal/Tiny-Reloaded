@@ -47,10 +47,12 @@ espacio		= [ \t]+
 			return sf.newSymbol("Int",sym.int);
 			}
 
-"boolean"            {	if(debug) System.out.println("token boolean");
-			return sf.newSymbol("boolean",sym.boolean);
+"boolean"            {	if(debug) System.out.println("token BOOLEAN");
+			return sf.newSymbol("BOOLEAN",sym.BOOLEAN);
 			}
-
+"void"            {	if(debug) System.out.println("token VOID");
+			return sf.newSymbol("VOID",sym.VOID);
+			}
 
 "if"            {	if(debug) System.out.println("token IF");
 			return sf.newSymbol("IF",sym.IF);
@@ -61,8 +63,14 @@ espacio		= [ \t]+
 "else"          {	if(debug) System.out.println("token ELSE");
 			return sf.newSymbol("ELSE",sym.ELSE);
 			}
+"begin"         {	if(debug) System.out.println("token BEGIN");
+			return sf.newSymbol("BEGIN",sym.BEGIN);
+			}
 "end"           {	if(debug) System.out.println("token END");
 			return sf.newSymbol("END",sym.END);
+			}
+"for"        {	if(debug) System.out.println("token FOR");
+			return sf.newSymbol("FOR",sym.FOR);
 			}
 "repeat"        {	if(debug) System.out.println("token REPEAT");
 			return sf.newSymbol("REPEAT",sym.REPEAT);

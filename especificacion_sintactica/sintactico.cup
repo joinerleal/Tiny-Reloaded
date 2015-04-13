@@ -18,11 +18,14 @@ action code {:
 
 terminal INT;
 terminal BOOLEAN;
+terminal VOID;
 terminal IF;
 terminal THEN;
 terminal ELSE;
 terminal END;
+terminal BEGIN;
 terminal REPEAT;
+terminal FOR;
 terminal UNTIL;
 terminal READ;
 terminal WRITE;
@@ -130,6 +133,11 @@ if_stmt     ::= IF exp_seq:ex THEN stmt_seq:pthen END	{: if(modoDepuracion) Syst
 repeat_stmt ::= REPEAT stmt_seq:cuerpo UNTIL exp_seq:prueba	{: if(modoDepuracion) System.out.println("\t regla 5"); 
 				//	RESULT = new NodoRepeat(cuerpo,prueba);
 							:}
+		;
+
+for_stmt	::= FOR LPARENT assign_stmt:variable SEMI exp_seq:condicion SEMI assign_stmt:incremento RPARENT stmt_seq:cuerpo END{:
+					if(modoDepuracion) System.out.println("\t regla 17"); 
+					:}
 		;
 
 assign_stmt ::= ID:variable 	{: if(modoDepuracion) System.out.println("\t regla 6 parte del medio"); 
