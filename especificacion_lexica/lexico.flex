@@ -119,6 +119,9 @@ espacio		= [ \t]+
 ")"             {	if(debug) System.out.println("token RPAREN");
 			return sf.newSymbol("RPAREN",sym.RPAREN);
 			}
+","             {	if(debug) System.out.println("token COLOM");
+			return sf.newSymbol("COLOM",sym.COLOM);
+			}
 ";"             {	if(debug) System.out.println("token SEMI");
 			return sf.newSymbol("SEMI",sym.SEMI);
 			}
