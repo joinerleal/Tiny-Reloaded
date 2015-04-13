@@ -43,13 +43,11 @@ espacio		= [ \t]+
 
 %%
 
-"int"            {	if(debug) System.out.println("token int");
-			return sf.newSymbol("Int",sym.int);
+"INT | BOOLEAN"            {	if(debug) System.out.println("token TipoDato");
+			return sf.newSymbol("TipoDato",sym.TipoDato);
 			}
 
-"boolean"            {	if(debug) System.out.println("token BOOLEAN");
-			return sf.newSymbol("BOOLEAN",sym.BOOLEAN);
-			}
+			
 "void"            {	if(debug) System.out.println("token VOID");
 			return sf.newSymbol("VOID",sym.VOID);
 			}
