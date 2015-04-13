@@ -61,12 +61,16 @@ non terminal NodoBase assign_stmt;
 non terminal NodoBase read_stmt;
 non terminal NodoBase write_stmt;
 non terminal NodoBase declare_stmt;
+non terminal NodoBase declare_stmt_vec;
 non terminal NodoBase seq_variable;
 non terminal NodoBase func_summon;
 non terminal NodoBase proc_summon;
 non terminal NodoBase func_cast;
 non terminal NodoBase proc_cast;
+
 non terminal NodoBase exp;
+non terminal NodoBase exp_seq;
+
 non terminal NodoBase simple_exp;
 non terminal NodoBase term;
 non terminal NodoBase factor;
@@ -82,19 +86,19 @@ program     ::= stmt_seq:s	{: if(modoDepuracion) System.out.println("\t regla 1"
 				//	ast = s;
 					:}
 		;
-func_summon	::= assign_stmt:asignacion ID:func_nombre LPARENT stmt_seq:parametros RPARENT {:
+func_summon	::= assign_stmt:asignacion ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
 					if(modoDepuracion) System.out.println("\t regla 18"); 
 					:}
 		;
-proc_summon	::=	ID:func_nombre LPARENT stmt_seq:parametros RPARENT {:
+proc_summon	::=	ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
 					if(modoDepuracion) System.out.println("\t regla 19"); 
 					:}
 		;
-func_cast	::=	{: TIPO:type ID:func_nombre LPARENT seq_variable:parametros RPARENT BEGIN stmt_seq:cuerpo END
+func_cast	::=	{: TIPO:type ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo END
 					if(modoDepuracion) System.out.println("\t regla 21"); 
 					:}
 		;
-proc_cast	::= {: VOID ID:func_nombre LPARENT seq_variable:parametros RPARENT BEGIN stmt_seq:cuerpo END
+proc_cast	::= {: VOID ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo END
 					if(modoDepuracion) System.out.println("\t regla 22"); 
 					:}
 		;
@@ -155,7 +159,7 @@ repeat_stmt ::= REPEAT stmt_seq:cuerpo UNTIL exp_seq:prueba	{: if(modoDepuracion
 							:}
 		;
 
-for_stmt	::= FOR LPARENT assign_stmt:variable SEMI exp_seq:condicion SEMI assign_stmt:incremento RPARENT stmt_seq:cuerpo END{:
+for_stmt	::= FOR LPAREN assign_stmt:variable SEMI exp_seq:condicion SEMI assign_stmt:incremento RPAREN stmt_seq:cuerpo END{:
 					if(modoDepuracion) System.out.println("\t regla 17"); 
 					:}
 		;
@@ -232,7 +236,7 @@ declare_stmt  ::=  INT seq_variable	{: if(modoDepuracion) System.out.println("\t
 		;
 
 
-seq_variable	::= seq_variable:seqvar COL ID:variable{:
+seq_variable	::= seq_variable:seqvar COLOM ID:variable{:
 					if(modoDepuracion) System.out.println("\t regla 14a");
 					:}
 		|
