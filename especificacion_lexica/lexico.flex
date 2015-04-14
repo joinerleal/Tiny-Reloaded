@@ -43,13 +43,26 @@ espacio		= [ \t]+
 
 %%
 
-"INT | BOOLEAN"            {	if(debug) System.out.println("token TipoDato");
+"INT"            {	
+			
+			if(debug) System.out.println("token TipoDato");
 			return sf.newSymbol("TipoDato",sym.TipoDato);
 			}
-
+"BOOLEAN"            {	
+			
+			if(debug) System.out.println("token TipoDato");
+			return sf.newSymbol("TipoDato",sym.TipoDato);
+			}
 			
 "void"            {	if(debug) System.out.println("token VOID");
 			return sf.newSymbol("VOID",sym.VOID);
+			}
+
+"true"            {	if(debug) System.out.println("token TRUE");
+			return sf.newSymbol("TRUE",sym.TRUE);
+			}
+"false"          { if(debug) System.out.println("token FALSE");
+			return sf.newSymbol("FALSE",sym.FALSE);
 			}
 
 "if"            {	if(debug) System.out.println("token IF");
@@ -121,16 +134,6 @@ espacio		= [ \t]+
 "/"             {	if(debug) System.out.println("token OVER");
 			return sf.newSymbol("OVER",sym.OVER);
 			}
-
-
-"["             {	if(debug) System.out.println("token LCOR");
-			return sf.newSymbol("LCOR",sym.LCOR);
-			}
-"]"             {	if(debug) System.out.println("token RCOR");
-			return sf.newSymbol("RCOR",sym.RCOR);
-			}
-
-
 "("             {	if(debug) System.out.println("token LPAREN");
 			return sf.newSymbol("LPAREN",sym.LPAREN);
 			}

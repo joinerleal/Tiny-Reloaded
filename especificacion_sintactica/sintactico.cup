@@ -19,6 +19,8 @@ action code {:
 terminal String TipoDato;
 terminal VOID;
 terminal IF;
+terminal TRUE;
+terminal FALSE;
 terminal THEN;
 terminal ELSE;
 terminal END;
@@ -217,7 +219,7 @@ write_stmt  ::= WRITE exp:ex	{: if(modoDepuracion) System.out.println("\t regla 
 declare_stmt_vec  ::=  TipoDato:v ID:variable VEC:variablevec	{: if(modoDepuracion) System.out.println("\t regla 16"); 
 					/* System.out.println("Leyendo Variable");
 					if(variable!=null)
-					/* RESULT = new NodoLeer(variable.toString()); */
+					 RESULT = new NodoLeer(variable.toString()); 
 					System.out.println("\t regla 13a exitosa")
 					else{
 					RESULT = null;
@@ -230,16 +232,15 @@ declare_stmt_vec  ::=  TipoDato:v ID:variable VEC:variablevec	{: if(modoDepuraci
 
 declare_stmt  ::=  TipoDato:v seq_variable:seqvar	{: if(modoDepuracion) System.out.println("\t regla 13a"); 
 					System.out.println("Leyendo Variable");
-					if(variable!=null)
-					/* RESULT = new NodoLeer(variable.toString()); */
-					System.out.println("\t regla 13a exitosa")
+					/*if(variable!=null)
+					 RESULT = new NodoLeer(variable.toString()); 
+					System.out.println("\t regla 13a exitosa");
 					else{
 					RESULT = null;
 					System.out.println("Ocurrio error en cup # 0002");
-					}
+					} */
 					:}
 	
-
 
 
 		;
