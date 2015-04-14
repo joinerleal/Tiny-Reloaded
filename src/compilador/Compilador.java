@@ -25,6 +25,7 @@ public class Compilador {
 		parser_obj.parse();
 		
 		
+		
 		/* NodoBase root=parser_obj.action_obj.getASTroot();
 		System.out.println();
 		System.out.println("IMPRESION DEL AST GENERADO");
