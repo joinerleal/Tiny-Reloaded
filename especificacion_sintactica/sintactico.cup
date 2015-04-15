@@ -66,8 +66,7 @@ non terminal NodoBase write_stmt;
 non terminal NodoBase declare_stmt;
 non terminal NodoBase declare_stmt_vec;
 non terminal NodoBase seq_variable;
-non terminal NodoBase func_summon;
-non terminal NodoBase proc_summon;
+non terminal NodoBase summon;
 non terminal NodoBase func_cast;
 non terminal NodoBase proc_cast;
 non terminal NodoBase exp;
@@ -135,12 +134,10 @@ stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.pri
 		;
 
 
-stmt        ::=  func_summon:llamadafuncion	{: if(modoDepuracion) System.out.println("\t regla llamadafuncion"); 
+stmt        ::=  summon:llamadaSubprogram	{: if(modoDepuracion) System.out.println("\t regla summonSubprogram"); 
 				// RESULT=sent;				
 					:}
-			| proc_summon:llamadaprocedimiento	{: if(modoDepuracion) System.out.println("\t regla llamadaprocedimiento"); 
-				// RESULT=sent;				
-					:}
+			
 			| assign_stmt:sasi	{: if(modoDepuracion) System.out.println("\t regla assig"); 
 						// RESULT=sasi;
 					:}
@@ -164,11 +161,8 @@ stmt        ::=  func_summon:llamadafuncion	{: if(modoDepuracion) System.out.pri
         ;
 
 
-assign_stmt ::= ID:variable 	{: if(modoDepuracion) System.out.println("\t regla assig del medio"); 
-				/*lineanum=1000; //Pasar/Obtener la linea correcta por el Simbolo
-				String nombre = variable.getName();*/
-				:}
-			ASSIGN exp:ex	{: if(modoDepuracion) System.out.println("\t regla assig final");
+
+assign_stmt ::= ID:variable ASSIGN exp:ex	{: if(modoDepuracion) System.out.println("\t regla assig final");
 					/* if(variable!=null)
 					RESULT = new NodoAsignacion(variable.toString(),ex);
 					else{
@@ -176,23 +170,21 @@ assign_stmt ::= ID:variable 	{: if(modoDepuracion) System.out.println("\t regla 
 					System.out.println("Ocurrio error en cup # 0001");
 					} */
 					:}
-		;
 
-func_summon	::= assign_stmt:asignacion ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
-					if(modoDepuracion) System.out.println("\t regla funcsummon"); 
-					:}
-			| assign_stmt:asignacion ID:func_nombre LPAREN RPAREN {:
-					if(modoDepuracion) System.out.println("\t regla funcsummon"); 
-					:}		
-		;
+				| ID:variable ASSIGN summon
 
-proc_summon	::=	ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
-					if(modoDepuracion) System.out.println("\t regla procsummon"); 
+		; 
+
+summon	::=  ID:func_nombre LPAREN seq_variable:parametros RPAREN {:
+					if(modoDepuracion) System.out.println("\t regla summon subprogram con parametros"); 
 					:}
 			| ID:func_nombre LPAREN RPAREN {:
-					if(modoDepuracion) System.out.println("\t regla procsummon"); 
-					:}		
+					if(modoDepuracion) System.out.println("\t regla summon subprogram vacio"); 
+					:}
+		    
 		;
+
+
 
 read_stmt   ::= READ ID:variable	{: if(modoDepuracion) System.out.println("\t regla readstmt"); 
 					System.out.println("Leyendo Variable");
@@ -248,7 +240,7 @@ seq_variable	::= seq_variable:seqvar COLOM ID:variable   {:
 					:}
 		;
 
-		exp         	::= simple_exp:exI GT simple_exp:exD	{: if(modoDepuracion) System.out.println("\t regla 9a"); 
+	exp         	::= simple_exp:exI GT simple_exp:exD	{: if(modoDepuracion) System.out.println("\t regla 9a"); 
 								// RESULT = new NodoOperacion(exI,tipoOp.menor,exD);
 								:} 
 		| simple_exp:exI LT simple_exp:exD	{: if(modoDepuracion) System.out.println("\t regla 9b"); 
@@ -319,4 +311,6 @@ factor      ::= LPAREN exp:ex RPAREN	{: if(modoDepuracion) System.out.println("\
 				// RESULT=null;
 				:}
 		;
+
+
 
