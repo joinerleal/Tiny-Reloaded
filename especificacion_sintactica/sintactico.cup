@@ -53,6 +53,8 @@ terminal SEMI;
 
 /* Simbolos No Terminales */
 non terminal program;
+non terminal principal;
+non terminal sub_program;
 non terminal NodoBase stmt_seq;
 non terminal NodoBase stmt;
 non terminal NodoBase if_stmt;
@@ -82,12 +84,40 @@ precedence left ID;
 
 
 /* REGLAS GRAMATICALES */
-program     ::= stmt_seq:s SEMI	{: if(modoDepuracion) System.out.println("\t regla 1"); 
-				//	ast = s;
+
+
+program      ::= principal:s {:
+
+									 if(modoDepuracion) System.out.println("\t regla root"); 
+									//	ast = s;
+							:}
+;
+
+principal     ::= sub_program:sp BEGIN stmt_seq:cuerpo SEMI END | BEGIN stmt_seq:cuerpo SEMI END	;
+
+sub_program ::=  sub_program:sub func_cast:primerafuncion {: if(modoDepuracion) System.out.println("\t regla funcion arriba"); 
+					:}
+			| sub_program:sub proc_cast:primerproceso {: if(modoDepuracion) System.out.println("\t regla proc arriba"); 
+					:}
+			| func_cast     {: 
+					if(modoDepuracion) System.out.println("\t regla funcion"); 
+					:} 
+			| proc_cast		{: 
+					if(modoDepuracion) System.out.println("\t regla procedimiento"); 
 					:}
 		;
 
-stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.println("\t regla 2a"); 
+func_cast	::=	TipoDato:tipo ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo SEMI END 
+
+			| TipoDato:tipo ID:func_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI END 
+		;
+
+proc_cast	::= VOID ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo SEMI END 
+
+			| VOID ID:func_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI END 
+		;
+
+stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.println("\t regla stmtseq"); 
 						/* NodoBase hijoActual = ini;
 							if(hijoActual !=null){
 								while(hijoActual.TieneHermano()){
@@ -99,87 +129,46 @@ stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	{: if(modoDepuracion) System.out.pri
 								RESULT=sent;
 							} */
 					:}  		
-            | stmt:sent	{: if(modoDepuracion) System.out.println("\t regla 2b"); 
+            | stmt:sent	{: if(modoDepuracion) System.out.println("\t regla stmt"); 
 				// RESULT=sent;				
 				:} 			
 		;
 
 
-stmt        ::= func_cast:funcion	{: if(modoDepuracion) System.out.println("\t regla 3g"); 
+stmt        ::=  func_summon:llamadafuncion	{: if(modoDepuracion) System.out.println("\t regla llamadafuncion"); 
 				// RESULT=sent;				
 					:}
-			| proc_cast:procedimiento	{: if(modoDepuracion) System.out.println("\t regla 3h"); 
+			| proc_summon:llamadaprocedimiento	{: if(modoDepuracion) System.out.println("\t regla llamadaprocedimiento"); 
 				// RESULT=sent;				
-					:}			
-			| if_stmt:sif	{: if(modoDepuracion) System.out.println("\t regla 3a"); 
-					// RESULT=sif;
 					:}
-            | repeat_stmt:srep	{: if(modoDepuracion) System.out.println("\t regla 3b"); 
-						// RESULT=srep;
-					:}
-			| for_stmt:srep	{: if(modoDepuracion) System.out.println("\t regla 3i"); 
-						// RESULT=srep;
-					:}
-            | assign_stmt:sasi	{: if(modoDepuracion) System.out.println("\t regla 3c"); 
+			| assign_stmt:sasi	{: if(modoDepuracion) System.out.println("\t regla assig"); 
 						// RESULT=sasi;
 					:}
-			| func_summon:llamadafuncion	{: if(modoDepuracion) System.out.println("\t regla 3g"); 
-				// RESULT=sent;				
-					:}
-			| proc_summon:llamadaprocedimiento	{: if(modoDepuracion) System.out.println("\t regla 3h"); 
-				// RESULT=sent;				
-					:}
-            | read_stmt:slec	{: if(modoDepuracion) System.out.println("\t regla 3d"); 
+            | read_stmt:slec	{: if(modoDepuracion) System.out.println("\t regla readstmt"); 
 					// RESULT=slec;
 					:}
-            | write_stmt:sesc	{: if(modoDepuracion) System.out.println("\t regla 3e"); 
+            | write_stmt:sesc	{: if(modoDepuracion) System.out.println("\t regla writestmt"); 
 					// RESULT=sesc;
 					:}
-			| declare_stmt:sdec	{: if(modoDepuracion) System.out.println("\t regla 3f"); 
+			| declare_stmt:sdec	{: if(modoDepuracion) System.out.println("\t regla declarestmt"); 
 					// RESULT=sdec;
 					:}
-			| declare_stmt_vec:sdecv	{: if(modoDepuracion) System.out.println("\t regla 3g"); 
+			| declare_stmt_vec:sdecv	{: if(modoDepuracion) System.out.println("\t regla declarestmtvec"); 
 					// RESULT=sdecv;
 					:}
-            | error	{: if(modoDepuracion) System.out.println("\t regla 3f"); 
+
+            | error	{: if(modoDepuracion) System.out.println("\t error stmt"); 
 				System.out.println("Ocurrio error en cup # 0004");
 				// RESULT=null;
 				:}
         ;
 
-func_cast	::=	TipoDato:tipo ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo END {: 
-					if(modoDepuracion) System.out.println("\t regla 21"); 
-					:}
-		;
 
-proc_cast	::= VOID ID:func_nombre LPAREN seq_variable:parametros RPAREN BEGIN stmt_seq:cuerpo END {: 
-					if(modoDepuracion) System.out.println("\t regla 22"); 
-					:}
-		;
-
-if_stmt     ::= IF exp_seq:ex THEN stmt_seq:pthen END	{: if(modoDepuracion) System.out.println("\t regla 4a"); 
-				// RESULT = new NodoIf(ex,pthen);
-		:}
-		| IF exp_seq:ex THEN stmt_seq:pthen ELSE stmt_seq:pelse END	{: if(modoDepuracion) System.out.println("\t regla 4b"); 
-				// RESULT = new NodoIf(ex,pthen,pelse);		
-		:}
-		;
-
-repeat_stmt ::= REPEAT stmt_seq:cuerpo UNTIL exp_seq:prueba	{: if(modoDepuracion) System.out.println("\t regla 5"); 
-				//	RESULT = new NodoRepeat(cuerpo,prueba);
-							:}
-		;
-
-for_stmt	::= FOR LPAREN assign_stmt:variable SEMI exp_seq:condicion SEMI assign_stmt:incremento RPAREN stmt_seq:cuerpo END {:
-					if(modoDepuracion) System.out.println("\t regla 17"); 
-					:}
-		;
-
-assign_stmt ::= ID:variable 	{: if(modoDepuracion) System.out.println("\t regla 6 parte del medio"); 
+assign_stmt ::= ID:variable 	{: if(modoDepuracion) System.out.println("\t regla assig del medio"); 
 				/*lineanum=1000; //Pasar/Obtener la linea correcta por el Simbolo
 				String nombre = variable.getName();*/
 				:}
-			ASSIGN exp:ex	{: if(modoDepuracion) System.out.println("\t regla 6 parte final");
+			ASSIGN exp:ex	{: if(modoDepuracion) System.out.println("\t regla assig final");
 					/* if(variable!=null)
 					RESULT = new NodoAsignacion(variable.toString(),ex);
 					else{
@@ -190,16 +179,22 @@ assign_stmt ::= ID:variable 	{: if(modoDepuracion) System.out.println("\t regla 
 		;
 
 func_summon	::= assign_stmt:asignacion ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
-					if(modoDepuracion) System.out.println("\t regla 18"); 
+					if(modoDepuracion) System.out.println("\t regla funcsummon"); 
 					:}
+			| assign_stmt:asignacion ID:func_nombre LPAREN RPAREN {:
+					if(modoDepuracion) System.out.println("\t regla funcsummon"); 
+					:}		
 		;
 
 proc_summon	::=	ID:func_nombre LPAREN stmt_seq:parametros RPAREN {:
-					if(modoDepuracion) System.out.println("\t regla 19"); 
+					if(modoDepuracion) System.out.println("\t regla procsummon"); 
 					:}
+			| ID:func_nombre LPAREN RPAREN {:
+					if(modoDepuracion) System.out.println("\t regla procsummon"); 
+					:}		
 		;
 
-read_stmt   ::= READ ID:variable	{: if(modoDepuracion) System.out.println("\t regla 7"); 
+read_stmt   ::= READ ID:variable	{: if(modoDepuracion) System.out.println("\t regla readstmt"); 
 					System.out.println("Leyendo Variable");
 					/* if(variable!=null)
 					RESULT = new NodoLeer(variable.toString());
@@ -210,13 +205,13 @@ read_stmt   ::= READ ID:variable	{: if(modoDepuracion) System.out.println("\t re
 					:}
 		;
 
-write_stmt  ::= WRITE exp:ex	{: if(modoDepuracion) System.out.println("\t regla 8"); 
+write_stmt  ::= WRITE exp:ex	{: if(modoDepuracion) System.out.println("\t regla writestmt"); 
 					// RESULT= new NodoEscribir(ex);
 					:}
 		;
 
 
-declare_stmt_vec  ::=  TipoDato:v ID:variable VEC:variablevec	{: if(modoDepuracion) System.out.println("\t regla 16"); 
+declare_stmt_vec  ::=  TipoDato:v ID:variable VEC:variablevec	{: if(modoDepuracion) System.out.println("\t declarestmtvec"); 
 					/* System.out.println("Leyendo Variable");
 					if(variable!=null)
 					 RESULT = new NodoLeer(variable.toString()); 
@@ -230,8 +225,7 @@ declare_stmt_vec  ::=  TipoDato:v ID:variable VEC:variablevec	{: if(modoDepuraci
 
 		;
 
-declare_stmt  ::=  TipoDato:v seq_variable:seqvar 	{: if(modoDepuracion) System.out.println("\t regla 13a"); 
-					System.out.println("Leyendo Variable");
+declare_stmt  ::=  TipoDato:v seq_variable:seqvar 	{: if(modoDepuracion) System.out.println("\t regla declarestmt"); 
 					/*if(variable!=null)
 					 RESULT = new NodoLeer(variable.toString()); 
 					System.out.println("\t regla 13a exitosa");
@@ -245,30 +239,16 @@ declare_stmt  ::=  TipoDato:v seq_variable:seqvar 	{: if(modoDepuracion) System.
 
 		;
 
-
 seq_variable	::= seq_variable:seqvar COLOM ID:variable   {:
-					if(modoDepuracion) System.out.println("\t regla 14a");
+					if(modoDepuracion) System.out.println("\t regla seqvariable");
 					:}
 		|
 					ID:variable  {:
-					if(modoDepuracion) System.out.println("\t regla 14b");
+					if(modoDepuracion) System.out.println("\t regla variable");
 					:}
 		;
 
-exp_seq			::= exp:exI OR exp:exD	{:
-					if(modoDepuracion) System.out.println("\t regla 15a");
-					:}
-		| exp:exI AND exp:exD	{:
-					if(modoDepuracion) System.out.println("\t regla 15a");
-					:}
-		| exp {:
-					if(modoDepuracion) System.out.println("\t regla 15a");
-					:}
-		;
-
-
-
-exp         	::= simple_exp:exI GT simple_exp:exD	{: if(modoDepuracion) System.out.println("\t regla 9a"); 
+		exp         	::= simple_exp:exI GT simple_exp:exD	{: if(modoDepuracion) System.out.println("\t regla 9a"); 
 								// RESULT = new NodoOperacion(exI,tipoOp.menor,exD);
 								:} 
 		| simple_exp:exI LT simple_exp:exD	{: if(modoDepuracion) System.out.println("\t regla 9b"); 
@@ -339,3 +319,4 @@ factor      ::= LPAREN exp:ex RPAREN	{: if(modoDepuracion) System.out.println("\
 				// RESULT=null;
 				:}
 		;
+

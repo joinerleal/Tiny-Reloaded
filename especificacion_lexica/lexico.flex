@@ -35,7 +35,7 @@ import java_cup.runtime.*;
 
 digito		= [0-9]
 VECTOR	= ["["] [1-9]+ ["]"]
-numero		= {digito}+ | [ \-] {digito}+
+numero		= {digito}+ | ["-"] {digito}+
 letra			= [a-zA-Z]
 identificador	= {letra}+
 nuevalinea		= \n | \n\r | \r\n
