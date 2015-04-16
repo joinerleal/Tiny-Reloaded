@@ -66,6 +66,7 @@ non terminal NodoBase write_stmt;
 non terminal NodoBase declare_stmt;
 non terminal NodoBase declare_stmt_vec;
 non terminal NodoBase seq_variable;
+non terminal NodoBase seq_exp;
 non terminal NodoBase summon;
 non terminal NodoBase func_cast;
 non terminal NodoBase proc_cast;
@@ -207,12 +208,15 @@ assign_stmt ::= ID:variable ASSIGN exp:ex
 									} */
 					:}
 
-				| ID:variable ASSIGN summon
+				| ID:variable ASSIGN summon {:
+								if(modoDepuracion) 
+								System.out.println("\t regla summon con asignacion"); 
+					:}
 
 ; 
 
 
-summon	::= ID:func_nombre LPAREN seq_variable:parametros RPAREN 
+summon	::= ID:func_nombre LPAREN seq_exp:parametros RPAREN 
 							{:
 								if(modoDepuracion) 
 								System.out.println("\t regla summon subprogram con parametros"); 
@@ -286,6 +290,16 @@ seq_variable	::= seq_variable:seqvar COLOM ID:variable
 				
 					| ID:variable  
 							{:if(modoDepuracion) System.out.println("\t regla variable");
+					:}
+
+;
+
+seq_exp	::= seq_exp:seqexp COLOM exp:expresion  
+							 {:if(modoDepuracion) System.out.println("\t regla seqexpresion");
+					:}
+				
+					| exp:expresion  
+							{:if(modoDepuracion) System.out.println("\t regla seq expresion sola");
 					:}
 
 ;
