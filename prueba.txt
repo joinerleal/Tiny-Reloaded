@@ -1,8 +1,9 @@
-void asd(boolean s, int s)
+int asd(boolean s, int s)
 	begin
 		int s,s;
 		boolean s;
 		read x;
+		return y;
 end
 
 begin	
@@ -16,4 +17,8 @@ begin
 		int x;
 		v:=3;
 	until (x!=3);
+
+	asd(asd,(4<4));
+	d:=asdd(as || b);
+
 end
