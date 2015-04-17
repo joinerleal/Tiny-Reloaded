@@ -7,6 +7,7 @@ action code {:
 	private boolean modoDepuracion=false;
 	private NodoBase ast=null;
 	private int lineanum=0;
+	NodoBase hijoActual=null;
 	
 	//Debe ser llamada solo despues de un parse(), en caso contrario retornara null siempre;
 	public NodoBase getASTroot(){
@@ -149,7 +150,7 @@ param_cast	::= param_cast:parametros COLOM TipoDato:v ID:variable
 stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	
 						
 						{: if(modoDepuracion) System.out.println("\t regla stmtseq"); 
-							/* NodoBase hijoActual = ini;
+							 hijoActual = ini;
 						
 							if(hijoActual !=null){
 									
@@ -163,62 +164,62 @@ stmt_seq    ::= stmt_seq:ini SEMI stmt:sent
 							}
 							else{
 									RESULT=sent;
-							} */
+							} 
 					:}  		
             
             	| stmt:sent	
             			{: if(modoDepuracion) System.out.println("\t regla stmt"); 
-							// RESULT=sent;				
+							 RESULT=sent;				
 					:} 			
 ;
 
 
 stmt        ::= summon:llamadaSubprogram	
-						{: if(modoDepuracion) System.out.println("\t regla summonSubprogram"); 
-							// RESULT=sent;				
+						{: if(modoDepuracion) System.out.println("\t regla   summonSubprogram"); 
+							 RESULT=llamadaSubprogram;				
 					:}
 			
 				| if_stmt:sif 	{: if(modoDepuracion) System.out.println("\t regla if"); 
-					// RESULT=sif;
+					RESULT=sif;
 					:}
 
 				| repeat_stmt:srep	{: if(modoDepuracion) System.out.println("\t regla repeat"); 
-						// RESULT=srep;
+						RESULT=srep;
 					:}
 
 				| for_stmt:sfor	{: if(modoDepuracion) System.out.println("\t regla for"); 
-						// RESULT=srep;
+						 RESULT=sfor;
 					:}
 
 				| assign_stmt:sasi	
 						{: if(modoDepuracion) System.out.println("\t regla assig"); 
-							// RESULT=sasi;
+							 RESULT=sasi;
 					:}
 
             	| read_stmt:slec	
             				{: if(modoDepuracion) System.out.println("\t regla readstmt"); 
-							// RESULT=slec;
+							RESULT=slec;
 					:}
 
             	| write_stmt:sesc	
             				{: if(modoDepuracion) System.out.println("\t regla writestmt"); 
-							// RESULT=sesc;
+							 RESULT=sesc;
 					:}
 
 				| declare_stmt:sdec	
 							{: if(modoDepuracion) System.out.println("\t regla declarestmt"); 
-							// RESULT=sdec;
+							RESULT=sdec;
 					:}
 
 				| declare_stmt_vec:sdecv	
 							{: if(modoDepuracion) System.out.println("\t regla 					declarestmtvec"); 
-							// RESULT=sdecv;
+							 RESULT=sdecv;
 					:}
 
             	| error	
             				{: if(modoDepuracion) System.out.println("\t error stmt"); 
 								System.out.println("Ocurrio error en cup # 0004");
-								// RESULT=null;
+								 RESULT=null;
 					:}
 ;
 
@@ -226,17 +227,17 @@ stmt        ::= summon:llamadaSubprogram
 
 if_stmt     ::= IF exp_seq:ex THEN stmt_seq:pthen SEMI END
 							{: if(modoDepuracion) System.out.println("\t regla if"); 
-				// RESULT = new NodoIf(ex,pthen);
+				 RESULT = new NodoIf(ex,pthen);
 					:}
 
 				| IF exp_seq:ex THEN stmt_seq:pthen SEMI ELSE stmt_seq:pelse SEMI END	{: if(modoDepuracion) System.out.println("\t regla if else"); 
-					// RESULT = new NodoIf(ex,pthen,pelse);		
+					 RESULT = new NodoIf(ex,pthen,pelse);		
 			:}
 ;
 
 
 repeat_stmt ::= REPEAT stmt_seq:cuerpo SEMI UNTIL exp_seq:prueba	{: if(modoDepuracion) System.out.println("\t regla repeat"); 
-				//	RESULT = new NodoRepeat(cuerpo,prueba);
+					RESULT = new NodoRepeat(cuerpo,prueba);
 							:}
 ;
 
@@ -245,20 +246,22 @@ for_stmt	::= FOR LPAREN assign_stmt:variable SEMI exp_seq:condicion SEMI assign_
 					:}
 ;
 
-assign_stmt ::= ID:variable ASSIGN exp:ex	
+assign_stmt ::= ID:variable ASSIGN exp_seq:ex	
 							{: if(modoDepuracion) System.out.println("\t regla assig final");
 								
-								/* if(variable!=null)
-										RESULT = new NodoAsignacion(variable.toString(),ex);
+								 if(variable!=null)
+									{RESULT = new NodoAsignacion(variable.toString(),ex);				
+											}
 								   else{
 										RESULT = null;
 										System.out.println("Ocurrio error en cup # 0001");
-									} */
+									} 
 					:}
 
-				| ID:variable ASSIGN summon {:
+				| ID:variable ASSIGN summon:su {:
 								if(modoDepuracion) 
-								System.out.println("\t regla summon con asignacion"); 
+								System.out.println("\t regla summon con asignacion");
+								RESULT = new NodoAsignacion(variable.toString(),su); 
 					:}
 
 ; 
@@ -268,11 +271,15 @@ summon	::= ID:func_nombre LPAREN param_summon:parametros RPAREN
 							{:
 								if(modoDepuracion) 
 								System.out.println("\t regla summon subprogram con parametros"); 
+
+								RESULT= new NodoSummon(func_nombre, parametros);
 					:}
 			
 			| ID:func_nombre LPAREN RPAREN 
 							{:
 								if(modoDepuracion) System.out.println("\t regla summon subprogram vacio"); 
+
+								RESULT= new NodoSummon(func_nombre);
 					:}
 		    
 ;
@@ -281,19 +288,19 @@ summon	::= ID:func_nombre LPAREN param_summon:parametros RPAREN
 read_stmt   ::= READ ID:variable	
 							{:  if(modoDepuracion) System.out.println("\t regla readstmt"); 
 								
-								  /*if(variable!=null)
+								  if(variable!=null)
 										RESULT = new NodoLeer(variable.toString());
 									else{
 										RESULT = null;
 										System.out.println("Ocurrio error en cup # 0002");
-									} */
+									} 
 					:}
 ;
 
 
 write_stmt  ::= WRITE exp:ex	
 							{: if(modoDepuracion) System.out.println("\t regla writestmt"); 
-								// RESULT= new NodoEscribir(ex);
+							RESULT= new NodoEscribir(ex);
 					:}
 ;
 
@@ -333,119 +340,143 @@ declare_stmt  ::=  TipoDato:v seq_variable:seqvar
 
 seq_variable	::= seq_variable:seqvar COLOM ID:variable  
 							 {:if(modoDepuracion) System.out.println("\t regla seqvariable");
+
+							 	 if(variable!=null){
+
+							 	  	RESULT= new NodoIdentificador(variable.toString());
+							 	 }
 					:}
 				
 					| ID:variable  
 							{:if(modoDepuracion) System.out.println("\t regla variable");
+
+							 if(variable!=null){
+									System.out.println("Construyendo Nodo ID para Lexema: "+ variable.toString());
+									RESULT= new NodoIdentificador(variable.toString());		
+								}else{
+									RESULT = null;
+									System.out.println("Ocurrio error en cup # 0005");
+								} 
 					:}
 
 ;
 
 param_summon	::= param_summon:seqexp COLOM exp_seq:expresion  
 							 {:if(modoDepuracion) System.out.println("\t regla seqexpresion");
+
+							 // AQUI
 					:}
 				
 					| exp_seq:expresion  
 							{:if(modoDepuracion) System.out.println("\t regla seq expresion sola");
+
+
 					:}
 
 ;
 
 exp_seq			::= exp:exI OR exp:exD	{:
 					if(modoDepuracion) System.out.println("\t regla or");
+					 RESULT = new NodoOperacion(exI,tipoOp.or,exD);
+				
 					:}
 		| exp:exI AND exp:exD	{:
 					if(modoDepuracion) System.out.println("\t regla and");
+					 RESULT = new NodoOperacion(exI,tipoOp.and,exD);
+				
 					:}
-		| exp {:
-					
+		| exp:sd {:
+					    RESULT=sd;
 					:}
 		;
 
 exp         	::= simple_exp:exI GT simple_exp:exD	
 							{: if(modoDepuracion) System.out.println("\t regla mayor que"); 
-								// RESULT = new NodoOperacion(exI,tipoOp.menor,exD);
+								 RESULT = new NodoOperacion(exI,tipoOp.mayor,exD);
 					:} 
 
 					| simple_exp:exI LT simple_exp:exD	
 							{: if(modoDepuracion) System.out.println("\t regla menor que"); 
-								// RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
+								 RESULT = new NodoOperacion(exI,tipoOp.menor,exD);
 					:}
 
 					| simple_exp:exI LE simple_exp:exD	
 							{: if(modoDepuracion) System.out.println("\t regla menor o igual"); 
-								// RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
+								 RESULT = new NodoOperacion(exI,tipoOp.menorigual,exD);
 					:}
 
 					| simple_exp:exI GE simple_exp:exD	
 							{: if(modoDepuracion) System.out.println("\t regla mayor o igual"); 
-								// RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
+								RESULT = new NodoOperacion(exI,tipoOp.mayorigual,exD);
 					:}
 					
 					| simple_exp:exI EQ simple_exp:exD	
 							{: if(modoDepuracion) System.out.println("\t regla igual"); 
-								// RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
+								RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
 					:}
 					
 					| simple_exp:exI DIFF simple_exp:exD	
 							{: if(modoDepuracion) System.out.println("\t regla diferente"); 
-								// RESULT = new NodoOperacion(exI,tipoOp.igual,exD);
+								RESULT = new NodoOperacion(exI,tipoOp.diferente,exD);
 					:}
 					
 					| simple_exp:ex	
 							{: 
+							    RESULT=ex;
 					:}
 ;
 
 
 simple_exp  ::= simple_exp:exI PLUS term:exD	
 							{: if(modoDepuracion) System.out.println("\t regla mas"); 
-								// RESULT = new NodoOperacion(exI,tipoOp.mas,exD);
+								RESULT = new NodoOperacion(exI,tipoOp.mas,exD);
 					:}
 
 				| simple_exp:exI MINUS term:exD	
 							{: if(modoDepuracion) System.out.println("\t regla menos"); 
-								// 	RESULT = new NodoOperacion(exI,tipoOp.menos,exD);
+									RESULT = new NodoOperacion(exI,tipoOp.menos,exD);
 					:}
 
 				| term:ex	
 							{: 
+
+							RESULT=ex;
 					:}
 ;
 
 
 term        ::= term:exI TIMES factor:exD
 							{: if(modoDepuracion) System.out.println("\t regla por"); 
-								//  RESULT = new NodoOperacion(exI,tipoOp.por,exD);
+								 RESULT = new NodoOperacion(exI,tipoOp.por,exD);
 					:}
 
 			| term:exI OVER factor:exD
 							{: if(modoDepuracion) System.out.println("\t regla division"); 
-								//  RESULT = new NodoOperacion(exI,tipoOp.entre,exD);
+								  RESULT = new NodoOperacion(exI,tipoOp.entre,exD);
 					:}
 		
 			| factor:ex
 							{: 
-								//  RESULT=ex;
+								  RESULT=ex;
 					:}
 ;
 
 
 factor      ::= LPAREN exp_seq:ex RPAREN	
 							{: if(modoDepuracion) System.out.println("\t regla en parentesis"); 
-								// RESULT = ex;
+								 RESULT = ex;
 					:}
 
 				
 				| NUM:valor
 							{: if(modoDepuracion) System.out.println("\t regla numero"); 
 								
-								/*  if(valor!=null)
+								  if(valor!=null)
 										RESULT= new NodoValor(valor);					
 								    else{
 										RESULT = null;
 										System.out.println("Ocurrio error en cup # 0005");
-									} */
+									} 
 					:}
 
 				| TRUE
@@ -459,19 +490,19 @@ factor      ::= LPAREN exp_seq:ex RPAREN
 				| ID:variable	
 							{: if(modoDepuracion) System.out.println("\t regla variable"); 
 								
-								/* if(variable!=null){
+								 if(variable!=null){
 									System.out.println("Construyendo Nodo ID para Lexema: "+ variable.toString());
 									RESULT= new NodoIdentificador(variable.toString());		
 								}else{
 									RESULT = null;
 									System.out.println("Ocurrio error en cup # 0005");
-								} */
+								} 
 					:}
 
 				| error	
 							{:  if(modoDepuracion) System.out.println("\t regla 12d"); 
 								System.out.println("Ocurrio error en cup # 0003");
-								// RESULT=null;
+								 RESULT=null;
 				:}
 ;
 

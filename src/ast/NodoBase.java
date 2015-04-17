@@ -7,6 +7,7 @@ public class NodoBase {
 	 * DIDACTICA EN CLASE, SE LLEVARA A CABO DE FORMA MUY SIMPLE Y POCO FLEXIBLE
 	 * */
 	
+	
 	private NodoBase HermanoDerecha;
 
 	public NodoBase(NodoBase hermanoDerecha) {
