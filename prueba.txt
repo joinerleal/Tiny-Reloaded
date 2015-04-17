@@ -1,0 +1,19 @@
+void asd(boolean s, int s)
+	begin
+		int s,s;
+		boolean s;
+		read x;
+end
+
+begin	
+
+	if(i<4)
+		then
+			int X;
+	end;
+
+	repeat 
+		int x;
+		v:=3;
+	until (x!=3);
+end
