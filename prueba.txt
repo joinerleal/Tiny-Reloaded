@@ -1,4 +1,4 @@
-int asd(boolean s, int s)
+ int asd(boolean s, int s)
 	begin
 		int s,s;
 		boolean s;
@@ -19,6 +19,10 @@ begin
 	until (x!=3);
 
 	asd(asd,(4<4));
-	d:=asdd(as || b);
+	d:=asdd+1;
+
+	for(i:=0;i<4;d:=asdd+1)
+	  int s;
+	end;
 
 end

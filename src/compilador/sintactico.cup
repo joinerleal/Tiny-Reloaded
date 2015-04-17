@@ -4,7 +4,7 @@ import java_cup.runtime.*;
 import ast.*;
 
 action code {:
-	private boolean modoDepuracion=true;
+	private boolean modoDepuracion=false;
 	private NodoBase ast=null;
 	private int lineanum=0;
 	
@@ -91,7 +91,9 @@ precedence left ID;
 program      ::= principal:s 
 
 						{:if(modoDepuracion) System.out.println("\t regla root"); 
-									//	ast = s;
+										
+										System.out.println("\nNodo Root Sintactico Generado!\n\n");
+										ast = s;
 					:}
 ;
 
@@ -123,6 +125,12 @@ sub_program	 ::= sub_program:sub func_cast:primerafuncion
 
 
 func_cast	 ::= TipoDato:tipo ID:func_nombre LPAREN param_cast:parametros RPAREN BEGIN stmt_seq:cuerpo SEMI RETURN factor:valor SEMI END 
+						{: if(modoDepuracion) System.out.println("\t regla funcion");
+
+
+
+						    RESULT=new NodoFuncion(tipo,func_nombre.toString(),parametros,cuerpo,valor);
+					:}
 
 				| TipoDato:tipo ID:func_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI END 
 ;
@@ -272,7 +280,6 @@ summon	::= ID:func_nombre LPAREN param_summon:parametros RPAREN
 
 read_stmt   ::= READ ID:variable	
 							{:  if(modoDepuracion) System.out.println("\t regla readstmt"); 
-								System.out.println("Leyendo Variable");
 								
 								  /*if(variable!=null)
 										RESULT = new NodoLeer(variable.toString());

@@ -15,6 +15,7 @@ public class Compilador {
 		@SuppressWarnings("deprecation")
 		SymbolFactory sf = new DefaultSymbolFactory();
 		parser parser_obj;
+		System.out.println("\nLista tokens generados \n\n");
 		/*if (args.length==0) 
 			parser_obj=new parser(new Scanner(System.in,sf),sf);
 		else */
@@ -26,12 +27,13 @@ public class Compilador {
 		
 		
 		
-		/* NodoBase root=parser_obj.action_obj.getASTroot();
+		NodoBase root=parser_obj.action_obj.getASTroot();
 		System.out.println();
 		System.out.println("IMPRESION DEL AST GENERADO");
 		System.out.println();
 		ast.Util.imprimirAST(root);
-		TablaSimbolos ts = new TablaSimbolos();
+		
+		/* TablaSimbolos ts = new TablaSimbolos();
 		ts.cargarTabla(root);
 		ts.ImprimirClaves();
 	    //REALIZAR ACA ANALISIS SEMANTICO

@@ -43,16 +43,6 @@ espacio		= [ \t]+
 
 %%
 
-"int"            {	
-			
-			if(debug) System.out.println("token TipoDato");
-			return sf.newSymbol("TipoDato",sym.TipoDato);
-			}
-"boolean"            {	
-			
-			if(debug) System.out.println("token TipoDato");
-			return sf.newSymbol("TipoDato",sym.TipoDato);
-			}
 			
 "void"            {	if(debug) System.out.println("token VOID");
 			return sf.newSymbol("VOID",sym.VOID);
@@ -155,6 +145,12 @@ espacio		= [ \t]+
 
 {VECTOR}        {	if(debug) System.out.println("token VEC");
 			return sf.newSymbol("VEC",sym.VEC,new String(yytext()));
+			}
+"int"	{	if(debug) System.out.println("token TipoDato");
+				return sf.newSymbol("TipoDato",sym.TipoDato,new String(yytext()));
+			}
+			"boolean"	{	if(debug) System.out.println("token TipoDato");
+				return sf.newSymbol("TipoDato",sym.TipoDato,new String(yytext()));
 			}
 {identificador}	{	if(debug) System.out.println("token ID");
 				return sf.newSymbol("ID",sym.ID,new String(yytext()));
