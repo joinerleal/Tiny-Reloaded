@@ -1,33 +1,30 @@
 package ast;
 
-public class NodoFuncion extends NodoBase {
+public class NodoSub extends NodoBase {
 
-	private String Tipo,nombre;
+	private String Tipo;
 
-	private NodoBase Parametros;
+	private NodoBase Parametros,nombre;
 	private NodoBase Cuerpo;
 	private NodoBase retorno;
+	private boolean main=false;
 
 	
-	public NodoFuncion(String tipo, String nombre, NodoBase parametros, NodoBase cuerpo, NodoBase retorno ) {
+	public NodoSub(String tipo, NodoBase nombre, NodoBase parametros, NodoBase cuerpo, NodoBase retorno ) {
 		super();
 		this.Tipo = tipo;
 		this.nombre = nombre;
 		this.Parametros = parametros;
 		this.Cuerpo = cuerpo;
 		this.retorno = retorno;
+		
+		if(tipo==null) main=true;
+	}
+	
 
-	}
 	
-	public NodoFuncion(String tipo, String nombre,NodoBase cuerpo, NodoBase retorno ) {
-		super();
-		this.Tipo = tipo;
-		this.nombre = nombre;
-		this.Cuerpo = cuerpo;
-		this.retorno = retorno;	
-	}
 	
-	public NodoFuncion( ) {
+	public NodoSub( ) {
 		super();
 		this.Tipo = null;
 		this.nombre = null;
@@ -47,8 +44,11 @@ public class NodoFuncion extends NodoBase {
 	public NodoBase getcuerpo() {
 		return Cuerpo;
 	}
-	public String getnombre() {
+	public NodoBase getnombre() {
 		return nombre;
+	}
+	public boolean getmain() {
+		return main;
 	}
 
 	public void setTipo(String tipo) {
@@ -63,7 +63,7 @@ public class NodoFuncion extends NodoBase {
 	public void  setcuerpo(NodoBase cuerpo) {
 		this.Cuerpo = cuerpo;
 	}
-	public void  setnombre(String nombre) {
+	public void  setnombre(NodoBase nombre) {
 		this.nombre = nombre;
 	}
 

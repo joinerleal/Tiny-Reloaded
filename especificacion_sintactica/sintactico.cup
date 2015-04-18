@@ -7,7 +7,7 @@ action code {:
 	private boolean modoDepuracion=false;
 	private NodoBase ast=null;
 	private int lineanum=0;
-	NodoBase hijoActual=null;
+ private NodoBase hijosub=null;
 	
 	//Debe ser llamada solo despues de un parse(), en caso contrario retornara null siempre;
 	public NodoBase getASTroot(){
@@ -33,7 +33,6 @@ terminal RETURN;
 terminal READ;
 terminal WRITE;
 terminal String ID;
-terminal String VEC;
 terminal Integer NUM;
 terminal ASSIGN;
 terminal EQ;
@@ -50,6 +49,8 @@ terminal TIMES;
 terminal OVER;
 terminal LPAREN;
 terminal RPAREN;
+terminal LCOR;
+terminal RCOR;
 terminal COLOM;
 terminal SEMI;
 
@@ -101,56 +102,175 @@ program      ::= principal:s
 
 principal    ::= sub_program:sp BEGIN stmt_seq:cuerpo SEMI END 
 
-				| BEGIN stmt_seq:cuerpo SEMI END	
+					{:
+
+                            
+                          while(sp.TieneHermano()){
+
+										sp = sp.getHermanoDerecha();
+									}
+
+									sp.setHermanoDerecha(new NodoSub(null,null,null,cuerpo,null));
+									RESULT=new NodoSub(null,null,null,cuerpo,null);
+
+
+					:}
+
+
+				| BEGIN stmt_seq:cuerpo SEMI END
+
+					{:
+
+                            RESULT=new NodoSub(null,null,null,cuerpo,null);
+
+					:}	
 ;
 
 
 sub_program	 ::= sub_program:sub func_cast:primerafuncion 
 
 						{: if(modoDepuracion) System.out.println("\t regla funcion arriba"); 
+
+                            hijosub=sub;
+							if(hijosub !=null)
+							{
+									
+									while(hijosub.TieneHermano()){
+
+										hijosub = hijosub.getHermanoDerecha();
+									}
+
+									hijosub.setHermanoDerecha(primerafuncion);
+									RESULT=sub;
+							}
+							else
+							{
+									 if(primerafuncion!=null){
+										RESULT= primerafuncion;
+									} 
+							} 	
 					:}
 			
 				| sub_program:sub proc_cast:primerproceso 
 
-						{: if(modoDepuracion) System.out.println("\t regla proc arriba"); 
+						{: if(modoDepuracion) System.out.println("\t regla proc arriba");
+						
+
+						    hijosub=sub;
+							if(hijosub !=null)
+							{
+									
+									while(hijosub.TieneHermano()){
+
+										hijosub = hijosub.getHermanoDerecha();
+									}
+
+									hijosub.setHermanoDerecha(primerproceso);
+									RESULT=sub;
+							}
+							else
+							{
+									 if(primerproceso!=null){
+										RESULT= primerproceso;
+									} 
+							} 	 
 					:}
 			
-				| func_cast     
+				| func_cast  : fcast 
 						{: if(modoDepuracion) System.out.println("\t regla funcion"); 
+					
+							RESULT=fcast;
 					:} 
 
-				| proc_cast		
+				| proc_cast	: pcast	
 						{: if(modoDepuracion) System.out.println("\t regla procedimiento"); 
+					
+							RESULT=pcast;
 					:}
 	;
 
 
 func_cast	 ::= TipoDato:tipo ID:func_nombre LPAREN param_cast:parametros RPAREN BEGIN stmt_seq:cuerpo SEMI RETURN factor:valor SEMI END 
-						{: if(modoDepuracion) System.out.println("\t regla funcion");
+					{: if(modoDepuracion) System.out.println("\t regla funcion");
 
 
-
-						    RESULT=new NodoFuncion(tipo,func_nombre.toString(),parametros,cuerpo,valor);
+						    RESULT=new NodoSub(tipo,new NodoIdentificador(func_nombre.toString()),parametros,cuerpo,valor);
 					:}
 
-				| TipoDato:tipo ID:func_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI END 
+				| TipoDato:tipo ID:func_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI RETURN factor:valor SEMI END 
+
+				{:
+                             RESULT=new NodoSub(tipo,new NodoIdentificador(func_nombre.toString()),null,cuerpo,valor);
+
+				:}
 ;
 
 
-proc_cast	::= VOID ID:func_nombre LPAREN param_cast:parametros RPAREN BEGIN stmt_seq:cuerpo SEMI END 
+proc_cast	::= VOID ID:proc_nombre LPAREN param_cast:parametros RPAREN BEGIN 						stmt_seq:cuerpo SEMI END 
+				 {:
 
-				| VOID ID:func_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI  END 
+					RESULT=new NodoSub("void",new NodoIdentificador(proc_nombre.toString()),parametros,cuerpo,null);
+
+
+				 :}
+				
+				| VOID ID:proc_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI  END
+
+				{:
+					RESULT=new NodoSub("void",new NodoIdentificador(proc_nombre.toString()),null,cuerpo,null);
+                    
+
+				:}
+
 ;
 
 param_cast	::= param_cast:parametros COLOM TipoDato:v ID:variable
+				  
+				  {: NodoBase hijoParam = parametros;
+						
+							if(hijoParam !=null)
+							{
+									
+									while(hijoParam.TieneHermano()){
+
+										hijoParam = hijoParam.getHermanoDerecha();
+									}
+
+									hijoParam.setHermanoDerecha(new NodoDeclaracion(v,new NodoIdentificador(variable.toString())));
+									RESULT=parametros;
+							}
+							else
+							{
+									 if(variable!=null){
+										RESULT= new NodoDeclaracion(v,new NodoIdentificador(variable.toString()));
+									} 
+							} 			
+				:}
+
 				| TipoDato:v ID:variable
+						{:
+
+								if(variable!=null)
+								{
+									RESULT= new NodoDeclaracion(v,new NodoIdentificador(variable.toString()));	
+
+								}
+								else
+								{
+
+									RESULT = null;
+									System.out.println("Ocurrio error en cup # 0005");
+								} 
+						:}
+
+
 ;
 
 
 stmt_seq    ::= stmt_seq:ini SEMI stmt:sent	
 						
 						{: if(modoDepuracion) System.out.println("\t regla stmtseq"); 
-							 hijoActual = ini;
+							 NodoBase hijoActual = ini;
 						
 							if(hijoActual !=null){
 									
@@ -241,8 +361,21 @@ repeat_stmt ::= REPEAT stmt_seq:cuerpo SEMI UNTIL exp_seq:prueba	{: if(modoDepur
 							:}
 ;
 
-for_stmt	::= FOR LPAREN assign_stmt:variable SEMI exp_seq:condicion SEMI assign_stmt:incremento RPAREN stmt_seq:cuerpo SEMI END{:
-					if(modoDepuracion) System.out.println("\t regla for"); 
+for_stmt	::= FOR LPAREN assign_stmt:variable SEMI exp_seq:condicion SEMI assign_stmt:incremento RPAREN stmt_seq:cuerpo SEMI END
+						{:
+							if(modoDepuracion) System.out.println("\t regla for"); 
+
+								if(variable!=null)
+									{
+
+									RESULT = new NodoFor(variable,condicion,incremento, cuerpo);				
+											
+											}
+								   else{
+										RESULT = null;
+										System.out.println("Ocurrio error en cup # 0001");
+									} 
+
 					:}
 ;
 
@@ -250,7 +383,9 @@ assign_stmt ::= ID:variable ASSIGN exp_seq:ex
 							{: if(modoDepuracion) System.out.println("\t regla assig final");
 								
 								 if(variable!=null)
-									{RESULT = new NodoAsignacion(variable.toString(),ex);				
+									{
+
+									RESULT = new NodoAsignacion(variable.toString(),ex);				
 											}
 								   else{
 										RESULT = null;
@@ -298,23 +433,22 @@ read_stmt   ::= READ ID:variable
 ;
 
 
-write_stmt  ::= WRITE exp:ex	
+write_stmt  ::= WRITE exp_seq:ex	
 							{: if(modoDepuracion) System.out.println("\t regla writestmt"); 
 							RESULT= new NodoEscribir(ex);
 					:}
 ;
 
 
-declare_stmt_vec  ::=  TipoDato:v ID:variable VEC:variablevec	
+declare_stmt_vec  ::=  TipoDato:v ID:variable LCOR exp_seq:vec RCOR
 							{: if(modoDepuracion) System.out.println("\t declarestmtvec"); 
 								
-								  /*if(variable!=null)
-									 	RESULT = new NodoLeer(variable.toString()); 
-										System.out.println("\t regla 13a exitosa")
-									else{
-										RESULT = null;
-										System.out.println("Ocurrio error en cup # 0002");
-									} */
+								 	if(vec!=null)
+									RESULT = new NodoDeclaracion(v,new NodoIdentificador(variable.toString()),vec); 
+								  else{
+									RESULT = null;
+								 	System.out.println("Ocurrio error en cup # 0002");
+								  } 
 					:}
 
 
@@ -324,13 +458,12 @@ declare_stmt_vec  ::=  TipoDato:v ID:variable VEC:variablevec
 declare_stmt  ::=  TipoDato:v seq_variable:seqvar 	
 							{: if(modoDepuracion) System.out.println("\t regla declarestmt"); 
 								
-								/*if(variable!=null)
-									RESULT = new NodoLeer(variable.toString()); 
-									System.out.println("\t regla 13a exitosa");
+								if(seqvar!=null)
+									RESULT = new NodoDeclaracion(v,seqvar); 
 								  else{
 									RESULT = null;
 								 	System.out.println("Ocurrio error en cup # 0002");
-								  } */
+								  } 
 					:}
 	
 
@@ -341,17 +474,32 @@ declare_stmt  ::=  TipoDato:v seq_variable:seqvar
 seq_variable	::= seq_variable:seqvar COLOM ID:variable  
 							 {:if(modoDepuracion) System.out.println("\t regla seqvariable");
 
-							 	 if(variable!=null){
+							 NodoBase hijoSeq = seqvar;
+						
+							if(hijoSeq !=null){
+									
+									while(hijoSeq.TieneHermano()){
 
-							 	  	RESULT= new NodoIdentificador(variable.toString());
-							 	 }
+										hijoSeq = hijoSeq.getHermanoDerecha();
+									}
+
+									hijoSeq.setHermanoDerecha(new NodoIdentificador(variable.toString()));
+									RESULT=seqvar;
+							}
+							else{
+									 if(variable!=null){
+									RESULT= new NodoIdentificador(variable.toString());		
+								
+
+								
+								} 
+							} 
 					:}
 				
 					| ID:variable  
 							{:if(modoDepuracion) System.out.println("\t regla variable");
 
 							 if(variable!=null){
-									System.out.println("Construyendo Nodo ID para Lexema: "+ variable.toString());
 									RESULT= new NodoIdentificador(variable.toString());		
 								}else{
 									RESULT = null;
@@ -364,13 +512,27 @@ seq_variable	::= seq_variable:seqvar COLOM ID:variable
 param_summon	::= param_summon:seqexp COLOM exp_seq:expresion  
 							 {:if(modoDepuracion) System.out.println("\t regla seqexpresion");
 
-							 // AQUI
+							 NodoBase hijoSummon = seqexp;
+						
+							if(hijoSummon !=null){
+									
+									while(hijoSummon.TieneHermano()){
+
+										hijoSummon = hijoSummon.getHermanoDerecha();
+									}
+
+									hijoSummon.setHermanoDerecha(expresion);
+									RESULT=seqexp;
+							}
+							else{
+									RESULT=expresion;
+							} 
 					:}
 				
 					| exp_seq:expresion  
 							{:if(modoDepuracion) System.out.println("\t regla seq expresion sola");
-
-
+                               
+								RESULT=expresion;
 					:}
 
 ;
@@ -480,18 +642,28 @@ factor      ::= LPAREN exp_seq:ex RPAREN
 					:}
 
 				| TRUE
-							{: if(modoDepuracion) System.out.println("\t regla verdadero"); 								
+							{: if(modoDepuracion) System.out.println("\t regla verdadero"); 	
+
+
+								
+									RESULT= new NodoIdentificador("true");		
+															
 					:}
 
 				| FALSE
-							{: if(modoDepuracion) System.out.println("\t regla false"); 								
+							{: if(modoDepuracion) System.out.println("\t regla false"); 	
+
+
+									RESULT= new NodoIdentificador("false");		
+								
+									
+								 							
 					:}
 
 				| ID:variable	
 							{: if(modoDepuracion) System.out.println("\t regla variable"); 
 								
 								 if(variable!=null){
-									System.out.println("Construyendo Nodo ID para Lexema: "+ variable.toString());
 									RESULT= new NodoIdentificador(variable.toString());		
 								}else{
 									RESULT = null;

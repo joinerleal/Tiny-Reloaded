@@ -1,12 +1,35 @@
+void proc()
+begin 
+        int prueba,s;
+        int pru;
+	
+end
 
 begin	
 
+        int s;
+	boolean y,x;
 	if(i<4)
-		then
-			int X;
+	then
+			int s[123+52*82];
+			asig:=asd;
 	end;
+
 	d:= 4+5+6*2;
 
+	write (asd+3);
+
+	llamada(4);
+	llamadad(4<4,3+3);
+	llamadadd();
+
 	
+	for(i:=4;i<3;g:=g+1)
+		read s;
+	end;
+
+	repeat
+		llama();
+	until (1 || ab);
 
 end
