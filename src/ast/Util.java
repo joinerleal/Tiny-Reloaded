@@ -9,25 +9,15 @@ public class Util {
 		  sangria+=2;
 		  while (raiz != null) {
 		    printSpaces();
-		    if (raiz instanceof  NodoIf)
-		    	System.out.println("If");
-		    else if (raiz instanceof  NodoRepeat)
-		    	System.out.println("Repeat");
-		    
-		    else if (raiz instanceof  NodoAsignacion)
-		    	System.out.println("Asignacion a: "+((NodoAsignacion)raiz).getIdentificador());
+		    if (raiz instanceof  NodoSub)
+	    		System.out.print("->   ");
 
-		    else if (raiz instanceof  NodoLeer)  
-		    	System.out.println("Lectura: "+((NodoLeer)raiz).getIdentificador());
-
-		    else if (raiz instanceof  NodoEscribir)
-		    	System.out.println("Escribir");
-		    
-		    else if (raiz instanceof NodoOperacion
-		    		|| raiz instanceof NodoValor
-		    		|| raiz instanceof NodoIdentificador )
+		    	if(((NodoSub) raiz).getmain())
+		    		System.out.println("Main");
+		        if(!((NodoSub) raiz).getmain())
+		        	System.out.println(((NodoSub) raiz).getTipo());
 		    	imprimirNodo(raiz);
-		    else System.out.println("Tipo de nodo desconocido");;
+		    
 		    
 		    /* Hago el recorrido recursivo */
 		    if (raiz instanceof  NodoIf){

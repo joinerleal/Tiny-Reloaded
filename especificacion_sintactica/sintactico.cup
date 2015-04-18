@@ -102,28 +102,28 @@ program      ::= principal:s
 
 principal    ::= sub_program:sp BEGIN stmt_seq:cuerpo SEMI END 
 
-					{:
+				{:
 
-                            
-                          while(sp.TieneHermano()){
+					if(sp !=null)
+							{	NodoBase aux=sp;
+								while(aux.TieneHermano()){
 
-										sp = sp.getHermanoDerecha();
+										aux = aux.getHermanoDerecha();
 									}
 
-									sp.setHermanoDerecha(new NodoSub(null,null,null,cuerpo,null));
-									RESULT=new NodoSub(null,null,null,cuerpo,null);
+									aux.setHermanoDerecha(new NodoSub(null,null,null,cuerpo,null));
+								    RESULT=sp;
+						  }
 
-
-					:}
-
+				:}
 
 				| BEGIN stmt_seq:cuerpo SEMI END
 
-					{:
+				{:
+						 RESULT=new NodoSub(null,null,null,cuerpo,null);
+				:}
 
-                            RESULT=new NodoSub(null,null,null,cuerpo,null);
-
-					:}	
+					
 ;
 
 
@@ -131,7 +131,7 @@ sub_program	 ::= sub_program:sub func_cast:primerafuncion
 
 						{: if(modoDepuracion) System.out.println("\t regla funcion arriba"); 
 
-                            hijosub=sub;
+                           NodoBase hijosub=sub;
 							if(hijosub !=null)
 							{
 									
@@ -156,7 +156,7 @@ sub_program	 ::= sub_program:sub func_cast:primerafuncion
 						{: if(modoDepuracion) System.out.println("\t regla proc arriba");
 						
 
-						    hijosub=sub;
+						    NodoBase hijosub=sub;
 							if(hijosub !=null)
 							{
 									

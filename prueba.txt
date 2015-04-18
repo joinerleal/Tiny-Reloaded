@@ -5,6 +5,13 @@ begin
 	
 end
 
+int proc()
+begin 
+        int prueba,s;
+        int pru; return true;
+	
+end
+
 begin	
 
         int s;
