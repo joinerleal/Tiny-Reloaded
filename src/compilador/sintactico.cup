@@ -7,12 +7,32 @@ action code {:
 	private boolean modoDepuracion=false;
 	private NodoBase ast=null;
 	private int lineanum=0;
- private NodoBase hijosub=null;
+    private NodoBase hijosub=null;
 	
 	//Debe ser llamada solo despues de un parse(), en caso contrario retornara null siempre;
 	public NodoBase getASTroot(){
 		return ast;
 	}
+
+	
+:}
+
+parser code {:
+    private boolean errores=false;
+
+public boolean gethayerrores(){
+		return errores;
+	}
+
+	public void syntax_error(Symbol s){
+System.err.println("[ERROR sintactico] token:" + s.value+" inesperado, Linea:"+(s.right+1) +" Columna:"+s.left+ "" );
+errores=true;
+}
+
+public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+		System.err.println("[ERROR sintactico] token:" + s.value+" inesperado, Linea:"+(s.right+1) +" Columna:"+s.left+ "" );
+
+		errores=true; }
 :}
 
 /* Simbolos Terminales */
@@ -94,7 +114,6 @@ program      ::= principal:s
 
 						{:if(modoDepuracion) System.out.println("\t regla root"); 
 										
-										System.out.println("\nNodo Root Sintactico Generado!\n\n");
 										ast = s;
 					:}
 ;
@@ -335,12 +354,13 @@ stmt        ::= summon:llamadaSubprogram
 							{: if(modoDepuracion) System.out.println("\t regla 					declarestmtvec"); 
 							 RESULT=sdecv;
 					:}
-
-            	| error	
-            				{: if(modoDepuracion) System.out.println("\t error stmt"); 
-								System.out.println("Ocurrio error en cup # 0004");
+						| error	
+            			{:
 								 RESULT=null;
 					:}
+
+            
+
 ;
 
 
@@ -398,6 +418,10 @@ assign_stmt ::= ID:variable ASSIGN exp_seq:ex
 								System.out.println("\t regla summon con asignacion");
 								RESULT = new NodoAsignacion(variable.toString(),su); 
 					:}
+	
+
+
+
 
 ; 
 
@@ -669,13 +693,16 @@ factor      ::= LPAREN exp_seq:ex RPAREN
 									RESULT = null;
 									System.out.println("Ocurrio error en cup # 0005");
 								} 
+
 					:}
 
 				| error	
-							{:  if(modoDepuracion) System.out.println("\t regla 12d"); 
-								System.out.println("Ocurrio error en cup # 0003");
+            			{:
 								 RESULT=null;
-				:}
+					:}
+
+				
+
 ;
 
 
