@@ -1,7 +1,7 @@
 void proc()
-begin 
-        int prueba,s;
-        int pru;
+begin   
+        boolean dd;
+        int e;
 	
 end
 
