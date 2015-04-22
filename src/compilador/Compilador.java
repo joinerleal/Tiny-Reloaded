@@ -39,19 +39,18 @@ public class Compilador {
     			System.out.println("Analisis sintactico sin errores, arbol generado. \n");
 
     			NodoBase root=parser_obj.action_obj.getASTroot();
-    		/*	System.out.println("IMPRESION DEL AST GENERADO");
+    		
+    			System.out.println("*** AST Generado ***");
     			System.out.println();
-    			ast.Util.imprimirAST(root); */
+    			ast.Util.imprimirAST(root); 
     			
     			TablaSimbolos ts = new TablaSimbolos();
     			ts.cargarTabla(root);
-    			ts.ImprimirClaves();
     			
-    			
-					//UtGen.debug=true; //NO muestro mensajes de depuracion del generador (UTGen) para que el codigo sea compatible con la version visual de la TM
-					//Para ver depuracion de analisis sintactico se debe ir al parser.java y colocar modoDepuracion en true
-				
-		
+    			if(!ts.error)
+    				ts.ImprimirClaves();
+					
+    		
     		 /* //REALIZAR ACA ANALISIS SEMANTICO
     			Generador.setTablaSimbolos(ts);
     			Generador.generarCodigoObjeto(root); */
@@ -60,10 +59,10 @@ public class Compilador {
     		else
     		System.out.println("Errores encontrados en analisis sintactico.");
           
-          }
-          else
-      		System.out.println("\n\nErrores encontrados en analisis lexico/sintactico");
-
+	          }
+	          else
+	      		System.out.println("\n\nErrores encontrados en analisis lexico/sintactico");
+	
 
 	
 

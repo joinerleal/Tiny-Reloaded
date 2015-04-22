@@ -6,6 +6,7 @@ import ast.NodoAsignacion;
 import ast.NodoBase;
 import ast.NodoDeclaracion;
 import ast.NodoEscribir;
+import ast.NodoFor;
 import ast.NodoIdentificador;
 import ast.NodoIf;
 import ast.NodoOperacion;
@@ -19,7 +20,7 @@ public class TablaSimbolos {
 	private HashMap<String, RegistroSimbolo> tablasimbolos; // K= string identificador V= simbolos (clase RegistroSimbolo)
 	private HashMap<String, HashMap<String, RegistroSimbolo>> ambito; // K=  string ambito V= TablaSimbolos (tabla Hash) 
 	NodoBase aux; String amb;
-	
+	public boolean error;
 	
 	private int direccion;  //Contador de las localidades de memoria asignadas a la tabla
 	
@@ -89,6 +90,10 @@ public class TablaSimbolos {
 	    	cargarTabla(((NodoRepeat)raiz).getCuerpo());
 	    	cargarTabla(((NodoRepeat)raiz).getPrueba());
 	    }
+	    else if (raiz instanceof  NodoFor){
+	    	
+	    	cargarTabla(((NodoFor)raiz).getCuerpo());
+	    }
 	    else if (raiz instanceof  NodoAsignacion)
 	    	cargarTabla(((NodoAsignacion)raiz).getExpresion());
 	    else if (raiz instanceof  NodoEscribir)
@@ -104,10 +109,14 @@ public class TablaSimbolos {
 	//true es nuevo no existe se insertara, false ya existe NO se vuelve a insertar 
 	public boolean InsertarSimbolo(String identificador, int numfila,int numcolumna,String tipo,Object valor,String amb){
 		RegistroSimbolo simbolo;
-		if(tablasimbolos.containsKey(identificador)){
+		
+		
+		if((tablasimbolos.containsKey(identificador))&&tablasimbolos.get(identificador).getambito()==amb){
 			
-			System.err.println("[ERROR Semántico] Declaracion duplicada, variable: "+identificador+" Linea: "+numfila);
-			return false;
+			error=true;
+			System.err.println("[ERROR Semántico] Declaracion duplicada, variable: "+identificador+" Linea: "+numfila+ " Ambito: "+amb);
+			return false; 
+			
 		}else{
 			simbolo=new RegistroSimbolo(identificador,numfila,numcolumna,direccion++,amb,tipo,valor);
 			tablasimbolos.put(identificador,simbolo);
@@ -119,6 +128,7 @@ public class TablaSimbolos {
 		RegistroAmbito simbolo;
 		if(tablambitos.containsKey(identificador)){
 			
+			error=true;
 			System.err.println("[ERROR Semántico] Declaracion duplicada, Subprograma: "+identificador+" Linea: "+numfila);
 			return false;
 		}else{
@@ -140,7 +150,7 @@ public class TablaSimbolos {
 	
 	public void ImprimirClaves(){
 	
-		System.out.println("*** Tabla de Simbolos ***");
+		System.out.println("\n\n*** Tabla de Simbolos ***");
 		
 		for( Iterator <String>it = tablambitos.keySet().iterator(); it.hasNext();) 
 		{ 
@@ -150,7 +160,9 @@ public class TablaSimbolos {
 				for( Iterator <String>itt = tablasimbolos.keySet().iterator(); itt.hasNext();) 
 				{ 
 					String ss = (String)itt.next();
-				System.out.println("\tSimbolo: "+ss+"  tipo: "+ BuscarSimbolo(ss).gettipo()+" direccion: "+ BuscarSimbolo(ss).getdir());
+					
+					if(s== BuscarSimbolo(ss).getambito())
+						System.out.println("\tSimbolo: "+ss+"  tipo: "+ BuscarSimbolo(ss).gettipo()+" direccion: "+ BuscarSimbolo(ss).getdir());
 				}
 		
 		}

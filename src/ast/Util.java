@@ -8,18 +8,65 @@ public class Util {
 	public static void imprimirAST(NodoBase raiz){
 		  sangria+=2;
 		  while (raiz != null) {
-		    printSpaces();
-		    if (raiz instanceof  NodoSub)
-	    		System.out.print("->   ");
-
+		    
+			  
+			//imprimirNodo(raiz);  
+		    if (raiz instanceof  NodoSub)	
+		    {System.out.print("\n\n->   ");
+		    
 		    	if(((NodoSub) raiz).getmain())
-		    		System.out.println("Main");
-		        if(!((NodoSub) raiz).getmain())
-		        	System.out.println(((NodoSub) raiz).getTipo());
-		    	imprimirNodo(raiz);
-		    
-		    
-		    /* Hago el recorrido recursivo */
+		    	{printSpaces();
+		    	System.out.println("Main\n");
+		    	  NodoBase aux=((NodoSub)raiz).getcuerpo();
+	    	     imprimirAST(aux);		  
+	    	   
+
+		    	}
+		    	else if(!((NodoSub) raiz).getmain())
+		        {	printSpaces();System.out.println(((NodoSub) raiz).getTipo()+" "+((NodoIdentificador)  ((NodoSub) raiz).getnombre()).getNombre()+"\n");
+		        	NodoBase aux=((NodoSub)raiz).getcuerpo();
+				
+				    imprimirAST(aux);
+		        }
+		    	
+		    }
+		   if (raiz instanceof  NodoDeclaracion){
+				 
+		    	printSpaces();
+
+			   System.out.println("**Declaracion**");
+		    	imprimirAST(((NodoDeclaracion)raiz).getsecuencia());
+		    }
+		   if (raiz instanceof  NodoSummon){
+				 
+		    	printSpaces();
+
+			    System.out.println("** Llamada subprograma **");
+		    	
+		    }
+		   if (raiz instanceof  NodoLeer){
+				 
+		    	printSpaces();
+
+			    System.out.println("** Lee **");
+		    	
+		    }
+		   if (raiz instanceof  NodoEscribir){
+				 
+		    	printSpaces();
+
+			    System.out.println("** Escribe **");
+		    	
+		    }
+		   if (raiz instanceof  NodoFor){
+				 
+		    	printSpaces();
+			    System.out.println("** Ciclo For **");
+			    imprimirAST(((NodoFor)raiz).getCuerpo());
+		    	printSpaces();
+	    			
+		    	
+		    }
 		    if (raiz instanceof  NodoIf){
 		    	printSpaces();
 		    	System.out.println("**Prueba IF**");
@@ -42,15 +89,21 @@ public class Util {
 		    	imprimirAST(((NodoRepeat)raiz).getPrueba());
 		    }
 		    else if (raiz instanceof  NodoAsignacion)
-		    	imprimirAST(((NodoAsignacion)raiz).getExpresion());
+		    {	imprimirAST(((NodoAsignacion)raiz).getExpresion()
+		    			);
+		 	printSpaces();
+
+			   System.out.println("**Asignacion**");
+	
+		    }
 		    else if (raiz instanceof  NodoEscribir)
 		    	imprimirAST(((NodoEscribir)raiz).getExpresion());
 		    else if (raiz instanceof NodoOperacion){
-		    	printSpaces();
-		    	System.out.println("**Expr Izquierda Operacion**");
+		    	
+		    	
 		    	imprimirAST(((NodoOperacion)raiz).getOpIzquierdo());
-		    	printSpaces();
-		    	System.out.println("**Expr Derecha Operacion**");		    	
+		    	
+		    		    	
 		    	imprimirAST(((NodoOperacion)raiz).getOpDerecho());
 		    }
 		    raiz = raiz.getHermanoDerecha();

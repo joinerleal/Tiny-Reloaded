@@ -1,24 +1,25 @@
 void proc()
 begin  
-        boolean prueba,s,SIII;
+        boolean prueba,ss,SIII;
         int pru;
         d:= 4+5+6*2;
 	
 end
 
-int prodc()
+int prodc(int parametr)
 begin 
         int pruebaa,ss;
-        int pruu; 
-
+        int funcion; 
+ d:= 4+5+6*2;
         return true;
 	
 end
 
 begin	
 
-        int skkk;
+    int skkk;
 	boolean y,x;
+
 	if(i<4)
 	then
 			int sa[123+52*82];
@@ -26,8 +27,8 @@ begin
 
 			repeat
 				llama();
-				until (1 || ab);
-			end;
+			until (1 || ab);
+	end;
 
 	d:= 4+5+6*2;
 
@@ -39,11 +40,11 @@ begin
 
 	repeat
 			llama();
-			until (1 || ab);
+	until (1 || ab);
 	
 	
 	for(i:=4;i<3;g:=g+1)
-		read s;
+		int asdfg;
 	end;
 
 	
