@@ -36,7 +36,7 @@ public class Compilador {
       	     
       		if(!parser_obj.gethayerrores()){	
 				
-    			System.out.println("\n\nAnalisis sintactico sin errores, arbol generado. \n");
+    			System.out.println("Analisis sintactico sin errores, arbol generado. \n");
 
     			NodoBase root=parser_obj.action_obj.getASTroot();
     		/*	System.out.println("IMPRESION DEL AST GENERADO");
@@ -45,7 +45,7 @@ public class Compilador {
     			
     			TablaSimbolos ts = new TablaSimbolos();
     			ts.cargarTabla(root);
-    		
+    			ts.ImprimirClaves();
     			
     			
 					//UtGen.debug=true; //NO muestro mensajes de depuracion del generador (UTGen) para que el codigo sea compatible con la version visual de la TM

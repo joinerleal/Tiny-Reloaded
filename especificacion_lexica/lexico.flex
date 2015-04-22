@@ -174,4 +174,4 @@ espacio		= [ \t]+
 {nuevalinea}       {lineanum++;}
 {espacio}    { /* saltos espacios en blanco*/}
 "{"[^}]+"}"  { /* salto comentarios */ if(debug) System.out.println("token COMENTARIO"); }
-.               {System.err.println("[ERROR lexico] caracter desconocido: " + yytext() + ", Linea:"+(yyline+1) +" Columna:"+(yycolumn+1)+ ""); this.errores=true;}
+.               {System.err.println("[ERROR lexico] caracter desconocido: " + yytext() + ", Linea:"+(yyline+1) ); this.errores=true;}

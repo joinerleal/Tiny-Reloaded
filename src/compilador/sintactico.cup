@@ -25,12 +25,12 @@ public boolean gethayerrores(){
 	}
 
 	public void syntax_error(Symbol s){
-System.err.println("[ERROR sintactico] token:" + s.value+" inesperado, Linea:"+(s.right+1) +" Columna:"+s.left+ "" );
+System.err.println("[ERROR sintactico] token inesperado, Linea:"+(s.right+1));
 errores=true;
 }
 
 public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
-		System.err.println("[ERROR sintactico] token:" + s.value+" inesperado, Linea:"+(s.right+1) +" Columna:"+s.left+ "" );
+		System.err.println("[ERROR sintactico] token inesperado, Linea:"+(s.right+1));
 
 		errores=true; }
 :}
@@ -130,7 +130,7 @@ principal    ::= sub_program:sp BEGIN stmt_seq:cuerpo SEMI END
 										aux = aux.getHermanoDerecha();
 									}
 
-									aux.setHermanoDerecha(new NodoSub(null,null,null,cuerpo,null));
+									aux.setHermanoDerecha(new NodoSub(null,null,null,cuerpo,null,cuerpoleft-1));
 								    RESULT=sp;
 						  }
 
@@ -139,7 +139,7 @@ principal    ::= sub_program:sp BEGIN stmt_seq:cuerpo SEMI END
 				| BEGIN stmt_seq:cuerpo SEMI END
 
 				{:
-						 RESULT=new NodoSub(null,null,null,cuerpo,null);
+						 RESULT=new NodoSub(null,null,null,cuerpo,null,cuerpoleft-1);
 				:}
 
 					
@@ -213,13 +213,13 @@ func_cast	 ::= TipoDato:tipo ID:func_nombre LPAREN param_cast:parametros RPAREN 
 					{: if(modoDepuracion) System.out.println("\t regla funcion");
 
 
-						    RESULT=new NodoSub(tipo,new NodoIdentificador(func_nombre.toString()),parametros,cuerpo,valor);
+						    RESULT=new NodoSub(tipo,new NodoIdentificador(func_nombre.toString()),parametros,cuerpo,valor,func_nombreleft);
 					:}
 
 				| TipoDato:tipo ID:func_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI RETURN factor:valor SEMI END 
 
 				{:
-                             RESULT=new NodoSub(tipo,new NodoIdentificador(func_nombre.toString()),null,cuerpo,valor);
+                             RESULT=new NodoSub(tipo,new NodoIdentificador(func_nombre.toString()),null,cuerpo,valor,func_nombreleft);
 
 				:}
 ;
@@ -228,7 +228,7 @@ func_cast	 ::= TipoDato:tipo ID:func_nombre LPAREN param_cast:parametros RPAREN 
 proc_cast	::= VOID ID:proc_nombre LPAREN param_cast:parametros RPAREN BEGIN 						stmt_seq:cuerpo SEMI END 
 				 {:
 
-					RESULT=new NodoSub("void",new NodoIdentificador(proc_nombre.toString()),parametros,cuerpo,null);
+					RESULT=new NodoSub("void",new NodoIdentificador(proc_nombre.toString()),parametros,cuerpo,null,proc_nombreleft);
 
 
 				 :}
@@ -236,7 +236,7 @@ proc_cast	::= VOID ID:proc_nombre LPAREN param_cast:parametros RPAREN BEGIN 				
 				| VOID ID:proc_nombre LPAREN RPAREN BEGIN stmt_seq:cuerpo SEMI  END
 
 				{:
-					RESULT=new NodoSub("void",new NodoIdentificador(proc_nombre.toString()),null,cuerpo,null);
+					RESULT=new NodoSub("void",new NodoIdentificador(proc_nombre.toString()),null,cuerpo,null,proc_nombreleft);
                     
 
 				:}
@@ -255,13 +255,13 @@ param_cast	::= param_cast:parametros COLOM TipoDato:v ID:variable
 										hijoParam = hijoParam.getHermanoDerecha();
 									}
 
-									hijoParam.setHermanoDerecha(new NodoDeclaracion(v,new NodoIdentificador(variable.toString())));
+									hijoParam.setHermanoDerecha(new NodoDeclaracion(v,new NodoIdentificador(variable.toString()),variableleft,variableright));
 									RESULT=parametros;
 							}
 							else
 							{
 									 if(variable!=null){
-										RESULT= new NodoDeclaracion(v,new NodoIdentificador(variable.toString()));
+										RESULT= new NodoDeclaracion(v,new NodoIdentificador(variable.toString()),variableleft,variableright);
 									} 
 							} 			
 				:}
@@ -271,7 +271,7 @@ param_cast	::= param_cast:parametros COLOM TipoDato:v ID:variable
 
 								if(variable!=null)
 								{
-									RESULT= new NodoDeclaracion(v,new NodoIdentificador(variable.toString()));	
+									RESULT= new NodoDeclaracion(v,new NodoIdentificador(variable.toString()),variableleft,variableright);	
 
 								}
 								else
@@ -468,7 +468,7 @@ declare_stmt_vec  ::=  TipoDato:v ID:variable LCOR exp_seq:vec RCOR
 							{: if(modoDepuracion) System.out.println("\t declarestmtvec"); 
 								
 								 	if(vec!=null)
-									RESULT = new NodoDeclaracion(v,new NodoIdentificador(variable.toString()),vec); 
+									RESULT = new NodoDeclaracion(v,new NodoIdentificador(variable.toString()),vec,variableleft,variableright); 
 								  else{
 									RESULT = null;
 								 	System.out.println("Ocurrio error en cup # 0002");
@@ -483,7 +483,7 @@ declare_stmt  ::=  TipoDato:v seq_variable:seqvar
 							{: if(modoDepuracion) System.out.println("\t regla declarestmt"); 
 								
 								if(seqvar!=null)
-									RESULT = new NodoDeclaracion(v,seqvar); 
+									RESULT = new NodoDeclaracion(v,seqvar,vleft,vright); 
 								  else{
 									RESULT = null;
 								 	System.out.println("Ocurrio error en cup # 0002");

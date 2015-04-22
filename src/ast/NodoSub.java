@@ -8,15 +8,17 @@ public class NodoSub extends NodoBase {
 	private NodoBase Cuerpo;
 	private NodoBase retorno;
 	private boolean main=false;
+	private int linea;
 
 	
-	public NodoSub(String tipo, NodoBase nombre, NodoBase parametros, NodoBase cuerpo, NodoBase retorno ) {
+	public NodoSub(String tipo, NodoBase nombre, NodoBase parametros, NodoBase cuerpo, NodoBase retorno,int linea ) {
 		super();
 		this.Tipo = tipo;
 		this.nombre = nombre;
 		this.Parametros = parametros;
 		this.Cuerpo = cuerpo;
 		this.retorno = retorno;
+		this.linea=linea;
 		
 		if(tipo==null) main=true;
 	}
@@ -49,6 +51,9 @@ public class NodoSub extends NodoBase {
 	}
 	public boolean getmain() {
 		return main;
+	}
+	public int getlinea() {
+		return linea;
 	}
 
 	public void setTipo(String tipo) {

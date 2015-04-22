@@ -1,22 +1,24 @@
 package compilador;
 
-public class RegistroSimbolo {
+public class RegistroAmbito {
+
+	
 	private String id;
 	private int fila;
 	private int columna;
 	private int dir;
-	private String ambito;
+	private String retorno;
     private String tipo;
     private Object valor;
-    private int vector;
+  
         
-	public RegistroSimbolo(String id, int fila,int columna,int dir,String ambito,String tipo, Object valor) {
+	public RegistroAmbito(String id, int fila,int columna,int dir,String retorno,String tipo, Object valor) {
 		super();
 		this.id = id;
 		this.fila = fila;
 		this.columna = columna;
 		this.dir = dir;
-        this.ambito = ambito;
+        this.retorno = retorno;
         this.tipo = tipo;
         this.valor=valor;
 	}
@@ -31,8 +33,8 @@ public class RegistroSimbolo {
 	public int getNumColumna() {
 		return this.columna;
 	}
-	public String getambito() {
-		return this.ambito;
+	public String getRetorno() {
+		return this.retorno;
 	}
 	public String gettipo() {
 		return this.tipo;

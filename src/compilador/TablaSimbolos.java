@@ -15,7 +15,7 @@ import ast.NodoSub;
 public class TablaSimbolos {
 	
 	// Tablas hash
-	private HashMap<String, RegistroSimbolo> tablambitos; // K= String  ambito V= simbolos (clase RegistroSimbolo)
+	private HashMap<String, RegistroAmbito> tablambitos; // K= String  ambito V= simbolos (clase RegistroSimbolo)
 	private HashMap<String, RegistroSimbolo> tablasimbolos; // K= string identificador V= simbolos (clase RegistroSimbolo)
 	private HashMap<String, HashMap<String, RegistroSimbolo>> ambito; // K=  string ambito V= TablaSimbolos (tabla Hash) 
 	NodoBase aux; String amb;
@@ -27,7 +27,7 @@ public class TablaSimbolos {
 		
 		super();
 		
-	    tablambitos = new HashMap<String,RegistroSimbolo>();
+	    tablambitos = new HashMap<String,RegistroAmbito>();
 	    tablasimbolos = new HashMap<String,RegistroSimbolo>();
 	    ambito = new HashMap<String, HashMap<String, RegistroSimbolo>>();
 		direccion=0; aux=null;
@@ -41,14 +41,14 @@ public class TablaSimbolos {
 	    if (raiz instanceof NodoDeclaracion){
 	    	
 	    	aux=((NodoDeclaracion) raiz).getsecuencia();
-	    	InsertarSimbolo(((NodoIdentificador) aux).getNombre(),-1,((NodoDeclaracion) raiz).gettipo(),null,amb);
+	    	InsertarSimbolo(((NodoIdentificador) aux).getNombre(),((NodoDeclaracion) raiz).getlinea(),((NodoDeclaracion) raiz).getcolumna(),((NodoDeclaracion) raiz).gettipo(),null,amb);
 	    	
 	    	while(aux.TieneHermano())
 	    	{	
 	    		
 	    		aux=aux.getHermanoDerecha(); 
-		    	InsertarSimbolo(((NodoIdentificador) aux).getNombre(),-1,((NodoDeclaracion) raiz).gettipo(),null,amb);
-
+	    		InsertarSimbolo(((NodoIdentificador) aux).getNombre(),((NodoDeclaracion) raiz).getlinea(),((NodoDeclaracion) raiz).getcolumna(),((NodoDeclaracion) raiz).gettipo(),null,amb);
+		    	
 	    		//TODO: Añadir el numero de linea y localidad de memoria correcta
 	    	}
 	    	
@@ -61,11 +61,16 @@ public class TablaSimbolos {
 	    	
 	    	if(!((NodoSub)raiz).getmain())
 	    	{	NodoBase Identificador=((NodoSub)raiz).getnombre();
-	    		amb= (((NodoIdentificador)Identificador).getNombre());
+	    	
+	    	    amb= (((NodoIdentificador)Identificador).getNombre());
+	    	    InsertarAmbito(amb, ((NodoSub)raiz).getlinea(), 0, ((NodoSub)raiz).getTipo(), null, null);
+	    		
 	    		cargarTabla(((NodoSub)raiz).getcuerpo());
 		    	cargarTabla(((NodoSub)raiz).getParametros());
 	    	}else{
 	    		amb="main";
+	    	 InsertarAmbito(amb, ((NodoSub)raiz).getlinea(), 0, ((NodoSub)raiz).getTipo(), null, null);
+	   	    	
 	    		cargarTabla(((NodoSub)raiz).getcuerpo());
 		    
 	    	}
@@ -97,29 +102,57 @@ public class TablaSimbolos {
 	}
 	
 	//true es nuevo no existe se insertara, false ya existe NO se vuelve a insertar 
-	public boolean InsertarSimbolo(String identificador, int numLinea,String tipo,Object valor,String amb){
+	public boolean InsertarSimbolo(String identificador, int numfila,int numcolumna,String tipo,Object valor,String amb){
 		RegistroSimbolo simbolo;
 		if(tablasimbolos.containsKey(identificador)){
 			
-			System.err.println("[ERROR Semántico] Declaracion duplicada, variable: "+identificador);
+			System.err.println("[ERROR Semántico] Declaracion duplicada, variable: "+identificador+" Linea: "+numfila);
 			return false;
 		}else{
-			simbolo=new RegistroSimbolo(identificador,numLinea,direccion++,amb,tipo,valor);
+			simbolo=new RegistroSimbolo(identificador,numfila,numcolumna,direccion++,amb,tipo,valor);
 			tablasimbolos.put(identificador,simbolo);
 			return true;			
 		}
 	}
 	
+	public boolean InsertarAmbito(String identificador, int numfila,int numcolumna,String tipo,Object valor,String retorno){
+		RegistroAmbito simbolo;
+		if(tablambitos.containsKey(identificador)){
+			
+			System.err.println("[ERROR Semántico] Declaracion duplicada, Subprograma: "+identificador+" Linea: "+numfila);
+			return false;
+		}else{
+			simbolo=new RegistroAmbito(identificador,numfila,numcolumna,direccion++,retorno,tipo,valor);
+			tablambitos.put(identificador,simbolo);
+			return true;			
+		}
+	}
+	
 	public RegistroSimbolo BuscarSimbolo(String identificador){
-		RegistroSimbolo simbolo=(RegistroSimbolo)tablambitos.get(identificador);
+		RegistroSimbolo simbolo=(RegistroSimbolo)tablasimbolos.get(identificador);
+		return simbolo;
+	}
+	
+	public RegistroAmbito BuscarAmbito(String identificador){
+		RegistroAmbito simbolo=(RegistroAmbito)tablambitos.get(identificador);
 		return simbolo;
 	}
 	
 	public void ImprimirClaves(){
+	
 		System.out.println("*** Tabla de Simbolos ***");
-		for( Iterator <String>it = tablambitos.keySet().iterator(); it.hasNext();) { 
+		
+		for( Iterator <String>it = tablambitos.keySet().iterator(); it.hasNext();) 
+		{ 
 			String s = (String)it.next();
-	  //  System.out.println("Consegui Key: "+s+" con direccion: " + BuscarSimbolo(s).getDireccionMemoria());
+			System.out.println("\nAmbito: "+s+"  tipo: "+ BuscarAmbito(s).gettipo()+" direccion: "+ BuscarAmbito(s).getdir());
+		
+				for( Iterator <String>itt = tablasimbolos.keySet().iterator(); itt.hasNext();) 
+				{ 
+					String ss = (String)itt.next();
+				System.out.println("\tSimbolo: "+ss+"  tipo: "+ BuscarSimbolo(ss).gettipo()+" direccion: "+ BuscarSimbolo(ss).getdir());
+				}
+		
 		}
 	}
 

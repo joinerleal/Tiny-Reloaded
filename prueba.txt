@@ -1,12 +1,12 @@
 void proc()
-begin 
-        int prueba,s;
+begin  
+        boolean prueba,s,SIII;
         int pru;
         d:= 4+5+6*2;
 	
 end
 
-int proc()
+int prodc()
 begin 
         int pruebaa,ss;
         int pruu; 
@@ -17,7 +17,7 @@ end
 
 begin	
 
-        int s;
+        int skkk;
 	boolean y,x;
 	if(i<4)
 	then
