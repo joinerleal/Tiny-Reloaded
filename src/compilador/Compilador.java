@@ -46,10 +46,10 @@ public class Compilador {
     			
     			TablaSimbolos ts = new TablaSimbolos();
     			ts.cargarTabla(root);
-    			
-    			if(!ts.error)
+    		   
+    		
+				if(!ts.error)
     				ts.ImprimirClaves();
-					
     		
     		 /* //REALIZAR ACA ANALISIS SEMANTICO
     			Generador.setTablaSimbolos(ts);

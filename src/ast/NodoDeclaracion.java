@@ -49,6 +49,9 @@ public class NodoDeclaracion extends NodoBase{
 	public String gettipo() {
 		return tipo;
 	}
+	public NodoBase getvector() {
+		return vector;
+	}
 	public NodoBase getsecuencia() {
 		return secuencia;
 	}

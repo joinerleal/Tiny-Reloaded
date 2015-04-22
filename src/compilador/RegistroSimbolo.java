@@ -1,5 +1,7 @@
 package compilador;
 
+import ast.NodoBase;
+
 public class RegistroSimbolo {
 	private String id;
 	private int fila;
@@ -8,9 +10,9 @@ public class RegistroSimbolo {
 	private String ambito;
     private String tipo;
     private Object valor;
-    private int vector;
+    private NodoBase vector=null;
         
-	public RegistroSimbolo(String id, int fila,int columna,int dir,String ambito,String tipo, Object valor) {
+	public RegistroSimbolo(String id, int fila,int columna,int dir,String ambito,String tipo, Object valor,NodoBase vector) {
 		super();
 		this.id = id;
 		this.fila = fila;
@@ -19,6 +21,7 @@ public class RegistroSimbolo {
         this.ambito = ambito;
         this.tipo = tipo;
         this.valor=valor;
+        this.vector=vector;
 	}
 
 	public String getid() {
@@ -37,7 +40,9 @@ public class RegistroSimbolo {
 	public String gettipo() {
 		return this.tipo;
 	}
-
+	public NodoBase getvector() {
+		return this.vector;
+	}
 	public int getdir() {
 		return this.dir;
 	}

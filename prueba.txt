@@ -10,7 +10,7 @@ int prodc(int parametr)
 begin 
         int pruebaa,ss;
         int funcion; 
- d:= 4+5+6*2;
+ 		d:= 4+5+6*2;
         return true;
 	
 end
@@ -22,7 +22,7 @@ begin
 
 	if(i<4)
 	then
-			int sa[123+52*82];
+			int sa[0];
 			asig:=asd;
 
 			repeat

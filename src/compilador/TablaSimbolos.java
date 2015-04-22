@@ -17,7 +17,7 @@ public class TablaSimbolos {
 	
 	// Tablas hash
 	private HashMap<String, RegistroAmbito> tablambitos; // K= String  ambito V= simbolos (clase RegistroSimbolo)
-	private HashMap<String, RegistroSimbolo> tablasimbolos; // K= string identificador V= simbolos (clase RegistroSimbolo)
+	private HashMap<String, RegistroSimbolo> tablasimbolos = null; // K= string identificador V= simbolos (clase RegistroSimbolo)
 	private HashMap<String, HashMap<String, RegistroSimbolo>> ambito; // K=  string ambito V= TablaSimbolos (tabla Hash) 
 	NodoBase aux; String amb;
 	public boolean error;
@@ -29,7 +29,6 @@ public class TablaSimbolos {
 		super();
 		
 	    tablambitos = new HashMap<String,RegistroAmbito>();
-	    tablasimbolos = new HashMap<String,RegistroSimbolo>();
 	    ambito = new HashMap<String, HashMap<String, RegistroSimbolo>>();
 		direccion=0; aux=null;
 	}
@@ -41,24 +40,53 @@ public class TablaSimbolos {
 		
 	    if (raiz instanceof NodoDeclaracion){
 	    	
-	    	aux=((NodoDeclaracion) raiz).getsecuencia();
-	    	InsertarSimbolo(((NodoIdentificador) aux).getNombre(),((NodoDeclaracion) raiz).getlinea(),((NodoDeclaracion) raiz).getcolumna(),((NodoDeclaracion) raiz).gettipo(),null,amb);
-	    	
-	    	while(aux.TieneHermano())
+	    	if(((NodoDeclaracion) raiz).getvector()==null)
 	    	{	
-	    		
-	    		aux=aux.getHermanoDerecha(); 
-	    		InsertarSimbolo(((NodoIdentificador) aux).getNombre(),((NodoDeclaracion) raiz).getlinea(),((NodoDeclaracion) raiz).getcolumna(),((NodoDeclaracion) raiz).gettipo(),null,amb);
+		    	aux=((NodoDeclaracion) raiz).getsecuencia();
+		    	InsertarSimbolo(((NodoIdentificador) aux).getNombre(),((NodoDeclaracion) raiz).getlinea(),((NodoDeclaracion) raiz).getcolumna(),((NodoDeclaracion) raiz).gettipo(),null,amb,null);
 		    	
-	    		//TODO: Añadir el numero de linea y localidad de memoria correcta
+		    	while(aux.TieneHermano())
+		    	{	
+		    		
+		    		aux=aux.getHermanoDerecha(); 
+		    		InsertarSimbolo(((NodoIdentificador) aux).getNombre(),((NodoDeclaracion) raiz).getlinea(),((NodoDeclaracion) raiz).getcolumna(),((NodoDeclaracion) raiz).gettipo(),null,amb,null);
+			    	
+		    		//TODO: Añadir el numero de linea y localidad de memoria correcta
+		    	}
 	    	}
-	    	
+	    	else
+	    	{
+	    		
+	    		aux=((NodoDeclaracion) raiz).getsecuencia();
+		    	InsertarSimbolo(((NodoIdentificador) aux).getNombre(),((NodoDeclaracion) raiz).getlinea(),((NodoDeclaracion) raiz).getcolumna(),((NodoDeclaracion) raiz).gettipo(),null,amb,((NodoDeclaracion) raiz).getvector());
+		    	
+		    	while(aux.TieneHermano())
+		    	{	
+		    		
+		    		aux=aux.getHermanoDerecha(); 
+		    		InsertarSimbolo(((NodoIdentificador) aux).getNombre(),((NodoDeclaracion) raiz).getlinea(),((NodoDeclaracion) raiz).getcolumna(),((NodoDeclaracion) raiz).gettipo(),null,amb,((NodoDeclaracion) raiz).getvector());
+			    	
+		    		//TODO: Añadir el numero de linea y localidad de memoria correcta
+		    	}
+	    		
+	    		
+	    	}
 	    	
 	    	
 	    }
 
 	    /* Hago el recorrido recursivo */
 	    if (raiz instanceof  NodoSub){
+	    	
+	    	if(tablasimbolos != null)
+	    	{
+	    		ambito.put(amb, tablasimbolos);
+	    		tablasimbolos=null;
+	    	
+	    	}    		
+	    	
+	    		tablasimbolos = new HashMap<String,RegistroSimbolo>();
+
 	    	
 	    	if(!((NodoSub)raiz).getmain())
 	    	{	NodoBase Identificador=((NodoSub)raiz).getnombre();
@@ -101,24 +129,26 @@ public class TablaSimbolos {
 	    else if (raiz instanceof NodoOperacion){
 	    	cargarTabla(((NodoOperacion)raiz).getOpIzquierdo());
 	    	cargarTabla(((NodoOperacion)raiz).getOpDerecho());
-	    }
-	    raiz = raiz.getHermanoDerecha();  
+	    }	    		ambito.put(amb, tablasimbolos);
+
+	    raiz = raiz.getHermanoDerecha();  	    		ambito.put(amb, tablasimbolos);
+
 	  }
 	}
 	
 	//true es nuevo no existe se insertara, false ya existe NO se vuelve a insertar 
-	public boolean InsertarSimbolo(String identificador, int numfila,int numcolumna,String tipo,Object valor,String amb){
+	public boolean InsertarSimbolo(String identificador, int numfila,int numcolumna,String tipo,Object valor,String amb,NodoBase vector){
 		RegistroSimbolo simbolo;
 		
 		
-		if((tablasimbolos.containsKey(identificador))&&tablasimbolos.get(identificador).getambito()==amb){
+		if((tablasimbolos.containsKey(identificador))){
 			
 			error=true;
 			System.err.println("[ERROR Semántico] Declaracion duplicada, variable: "+identificador+" Linea: "+numfila+ " Ambito: "+amb);
 			return false; 
 			
 		}else{
-			simbolo=new RegistroSimbolo(identificador,numfila,numcolumna,direccion++,amb,tipo,valor);
+			simbolo=new RegistroSimbolo(identificador,numfila,numcolumna,direccion++,amb,tipo,valor,vector);
 			tablasimbolos.put(identificador,simbolo);
 			return true;			
 		}
@@ -143,6 +173,10 @@ public class TablaSimbolos {
 		return simbolo;
 	}
 	
+	public RegistroSimbolo Buscaralter(String identificador,HashMap ha){
+		RegistroSimbolo simbolo=(RegistroSimbolo)ha.get(identificador);
+		return simbolo;
+	}
 	public RegistroAmbito BuscarAmbito(String identificador){
 		RegistroAmbito simbolo=(RegistroAmbito)tablambitos.get(identificador);
 		return simbolo;
@@ -150,20 +184,29 @@ public class TablaSimbolos {
 	
 	public void ImprimirClaves(){
 	
-		System.out.println("\n\n*** Tabla de Simbolos ***");
+		System.out.println("*** Tabla de Simbolos ***");
 		
-		for( Iterator <String>it = tablambitos.keySet().iterator(); it.hasNext();) 
+		for( Iterator <String>it = ambito.keySet().iterator(); it.hasNext();) 
 		{ 
 			String s = (String)it.next();
 			System.out.println("\nAmbito: "+s+"  tipo: "+ BuscarAmbito(s).gettipo()+" direccion: "+ BuscarAmbito(s).getdir());
 		
-				for( Iterator <String>itt = tablasimbolos.keySet().iterator(); itt.hasNext();) 
+			HashMap ha = ambito.get(s);
+			
+				for( Iterator <String>itt = ha.keySet().iterator(); itt.hasNext();) 
 				{ 
 					String ss = (String)itt.next();
 					
-					if(s== BuscarSimbolo(ss).getambito())
-						System.out.println("\tSimbolo: "+ss+"  tipo: "+ BuscarSimbolo(ss).gettipo()+" direccion: "+ BuscarSimbolo(ss).getdir());
-				}
+						if(s== Buscaralter(ss,ha).getambito())
+						{	
+							
+							if(Buscaralter(ss,ha).getvector()==null)
+								System.out.println("\tSimbolo: "+ss+"  tipo: "+ Buscaralter(ss,ha).gettipo()+" direccion: "+ Buscaralter(ss,ha).getdir());
+							else
+								System.out.println("\tSimbolo: "+ss+"  tipo: "+ Buscaralter(ss,ha).gettipo()+"[] direccion: "+ Buscaralter(ss,ha).getdir());
+							
+						}
+					}
 		
 		}
 	}
@@ -171,7 +214,19 @@ public class TablaSimbolos {
 	public int getDireccion(String Clave){
 		return BuscarSimbolo(Clave).getdir();
 	}
+public HashMap gettablambito(){
+		
+		return this.tablambitos;
+		
+		
+	}
 	
+public HashMap gettablasimbolo(){
+		
+		return this.tablasimbolos;
+		
+		
+	}
 	/*
 	 * TODO:
 	 * 1. Crear lista con las lineas de codigo donde la variable es usada.
