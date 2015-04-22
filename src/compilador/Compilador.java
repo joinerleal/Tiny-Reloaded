@@ -20,11 +20,13 @@ public class Compilador {
 		parser parser_obj=null; Scanner lexico; 
 	 
 	   
-		System.out.println("\nCompilador del lenguaje tiny a TM // René Martinez y Joiner Leal \n\n");
+		System.out.println("\nCompilador del lenguaje tiny  // René Martinez y Joiner Leal \n\n");
+		
 		/*if (args.length==0) 
 			parser_obj=new parser(lexico,sf);
 		else */
-		  lexico = new Scanner(new java.io.FileInputStream("./prueba.txt"),sf);
+		 
+		   lexico = new Scanner(new java.io.FileInputStream("./prueba.txt"),sf);
 		  parser_obj=new parser(lexico,sf);
 		  parser_obj.parse();
           if(!lexico.error())
@@ -35,22 +37,22 @@ public class Compilador {
       		if(!parser_obj.gethayerrores()){	
 				
     			System.out.println("\n\nAnalisis sintactico sin errores, arbol generado. \n");
-/*
+
     			NodoBase root=parser_obj.action_obj.getASTroot();
-    			System.out.println("IMPRESION DEL AST GENERADO");
+    		/*	System.out.println("IMPRESION DEL AST GENERADO");
     			System.out.println();
-    			ast.Util.imprimirAST(root);*/
+    			ast.Util.imprimirAST(root); */
     			
-    			/* TablaSimbolos ts = new TablaSimbolos();
+    			TablaSimbolos ts = new TablaSimbolos();
     			ts.cargarTabla(root);
-    			ts.ImprimirClaves();
+    		
     			
     			
 					//UtGen.debug=true; //NO muestro mensajes de depuracion del generador (UTGen) para que el codigo sea compatible con la version visual de la TM
 					//Para ver depuracion de analisis sintactico se debe ir al parser.java y colocar modoDepuracion en true
 				
 		
-    		    //REALIZAR ACA ANALISIS SEMANTICO
+    		 /* //REALIZAR ACA ANALISIS SEMANTICO
     			Generador.setTablaSimbolos(ts);
     			Generador.generarCodigoObjeto(root); */
     			

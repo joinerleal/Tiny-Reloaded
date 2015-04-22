@@ -1,31 +1,42 @@
 package compilador;
 
 public class RegistroSimbolo {
-	private String identificador;
-	private int NumLinea;
-	private int DireccionMemoria;
-	
-	public RegistroSimbolo(String identificador, int numLinea,
-			int direccionMemoria) {
+	private String id;
+	private int linea;
+	private int dir;
+	private String ambito;
+    private String tipo;
+    private Object valor;
+        
+	public RegistroSimbolo(String id, int linea,int dir,String ambito,String tipo, Object valor) {
 		super();
-		this.identificador = identificador;
-		NumLinea = numLinea;
-		DireccionMemoria = direccionMemoria;
+		this.id = id;
+		this.linea = linea;
+		this.dir = dir;
+        this.ambito = ambito;
+        this.tipo = tipo;
+        this.valor=valor;
 	}
 
-	public String getIdentificador() {
-		return identificador;
+	public String getid() {
+		return this.id;
 	}
 
 	public int getNumLinea() {
-		return NumLinea;
+		return this.linea;
+	}
+	public String getambito() {
+		return this.ambito;
+	}
+	public String gettipo() {
+		return this.tipo;
 	}
 
-	public int getDireccionMemoria() {
-		return DireccionMemoria;
+	public int getdir() {
+		return this.dir;
 	}
 
-	public void setDireccionMemoria(int direccionMemoria) {
-		DireccionMemoria = direccionMemoria;
+	public void setDir(int dir) {
+		this.dir = dir;
 	}
 }

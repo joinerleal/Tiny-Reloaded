@@ -1,14 +1,17 @@
 void proc()
-begin   
-        boolean dd;
-        int e;
+begin 
+        int prueba,s;
+        int pru;
+        d:= 4+5+6*2;
 	
 end
 
 int proc()
 begin 
-        int prueba,s;
-        int pru; return true;
+        int pruebaa,ss;
+        int pruu; 
+
+        return true;
 	
 end
 
@@ -18,9 +21,13 @@ begin
 	boolean y,x;
 	if(i<4)
 	then
-			int s[123+52*82];
+			int sa[123+52*82];
 			asig:=asd;
-	end;
+
+			repeat
+				llama();
+				until (1 || ab);
+			end;
 
 	d:= 4+5+6*2;
 
@@ -30,13 +37,15 @@ begin
 	llamadad(4<4,3+3);
 	llamadadd();
 
+	repeat
+			llama();
+			until (1 || ab);
+	
 	
 	for(i:=4;i<3;g:=g+1)
 		read s;
 	end;
 
-	repeat
-		llama();
-	until (1 || ab);
+	
 
 end

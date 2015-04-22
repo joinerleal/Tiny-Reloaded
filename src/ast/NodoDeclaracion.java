@@ -36,7 +36,6 @@ public class NodoDeclaracion extends NodoBase{
 
 	}
 	
-	
 
 	public String gettipo() {
 		return tipo;
